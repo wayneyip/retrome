@@ -22,13 +22,20 @@ void DataStore::addItem(Item* item)
 	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end())
 	{
 		// If type does not exist, the category does not exist either
-		// Put item in a new vector<Item*>, insert into new map with its category
-		// Then insert the new map into typeCategoryItemMap_
+		// Put item in a new vector<Item*>
 		std::vector<Item*> itemList;
 		itemList.push_back(item);
+
+		// Insert item and its category into a new map 
 		std::map<std::string, std::vector<Item*> > categoryItemMap;
 		categoryItemMap.insert(std::make_pair(category, itemList));
+
+		// Insert the new map into typeCategoryItemMap_
 		typeCategoryItemMap_.insert(std::make_pair(type, categoryItemMap));
+
+		// Also insert the new category into avatarItemMap_
+		Item* NULLPTR = NULL;
+		avatarItemMap_.insert(std::make_pair(category, NULLPTR));
 	}
 	else
 	{
@@ -40,6 +47,10 @@ void DataStore::addItem(Item* item)
 			std::vector<Item*> itemList;
 			itemList.push_back(item);
 			typeCategoryItemMap_[type].insert(std::make_pair(category, itemList));
+
+			// Also insert the new category into avatarItemMap_
+			Item* NULLPTR = NULL;
+			avatarItemMap_.insert(std::make_pair(category, NULLPTR));
 		}
 		else
 		{
@@ -48,6 +59,17 @@ void DataStore::addItem(Item* item)
 			typeCategoryItemMap_[type][category].push_back(item);
 		}
 	}
+}
+
+void DataStore::selectItem(Item* item)
+{
+	if (avatarItemMap_.find(item->getCategory()) == avatarItemMap_.end())
+	{
+		std::cout << "ERROR: NO CATEGORY FOUND FOR ITEM " + item->getSpriteName() << std::endl;
+		return;
+	}
+	avatarItemMap_[item->getCategory()] = item;
+	printAvatarMap();
 }
 
 std::vector<std::string> DataStore::getTypeCategories(std::string type)
@@ -88,7 +110,7 @@ std::vector<Item*> DataStore::getCategoryItems(std::string type, std::string cat
 	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end()
 		|| typeCategoryItemMap_[type].find(category) == typeCategoryItemMap_[type].end())
 	{
-		// If not found, insert error handler
+		// If either type or category not found, insert error handler
 		items.push_back(new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND"));
 	}
 	else
@@ -99,7 +121,7 @@ std::vector<Item*> DataStore::getCategoryItems(std::string type, std::string cat
 	return items;
 }
 
-void DataStore::printMap()
+void DataStore::printItemMap()
 {
 	// Print contents of map
 	typeMap::iterator it;
@@ -123,3 +145,13 @@ void DataStore::printMap()
 	}
 }
 
+void DataStore::printAvatarMap()
+{
+	avatarMap::iterator it;
+	for (it = avatarItemMap_.begin(); it != avatarItemMap_.end(); ++it)
+	{
+		std::cout << it->first << " ";
+		if (it->second) std::cout << it->second->getSpriteName() << std::endl;
+		else std::cout << "NULL" << std::endl;
+	}
+}

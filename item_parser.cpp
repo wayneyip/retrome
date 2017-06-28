@@ -51,6 +51,6 @@ bool ItemParser::parse(DataStore& ds, std::string imgDir,
 		Item* newItem = new Item(spritePath, iconPath, type, category);
 		ds.addItem(newItem);
 	}
-	ds.printMap();
+	ds.printAvatarMap();
 	return true;
 }

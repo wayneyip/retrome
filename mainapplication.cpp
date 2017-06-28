@@ -97,6 +97,7 @@ void MainApplication::styleLayout()
 void MainApplication::connectEvents()
 {
 	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
+	connect(selectionItemList, SIGNAL(currentRowChanged(int)), this, SLOT(selectItem()));
 
 }
 
@@ -123,6 +124,14 @@ void MainApplication::changeCategory()
 		selectionItemList->addItem(
 			new QListWidgetItem(QIcon(QString::fromStdString(itemList_[i]->getIconName())), NULL));
 	}
+}
+
+void MainApplication::selectItem()
+{
+	// Do nothing if only category is changed
+	if (selectionItemList->currentRow() < 0) return;
+
+	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
 }
 
 void MainApplication::updateAvatar()

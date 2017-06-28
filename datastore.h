@@ -11,14 +11,17 @@ class DataStore
 public:
 	typedef std::map<std::string, std::map<std::string, std::vector<Item*> > > typeMap;
 	typedef std::map<std::string, std::vector<Item*> > categoryMap;
+	typedef std::map<std::string, Item*> avatarMap;
 
 	DataStore();
 	~DataStore();
 	void addItem(Item* item);
+	void selectItem(Item* item);
 	std::vector<std::string> getTypeCategories(std::string type);
 	std::vector<Item*> getCategoryItems(std::string type, std::string category);
 
-	void printMap();
+	void printItemMap();
+	void printAvatarMap();
 
 private:
 	// Map of item types to categories to items

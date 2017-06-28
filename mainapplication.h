@@ -28,6 +28,7 @@ public:
 
 private slots:
 	void changeCategory();
+	void selectItem();
 
 private:
 	// Data members
