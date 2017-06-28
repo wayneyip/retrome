@@ -8,7 +8,6 @@
 #include <QTabWidget>
 #include <QLabel>
 #include <QListWidget>
-#include <QButtonGroup>
 #include <QPushButton>
 #include "datastore.h"
 
@@ -24,6 +23,7 @@ public:
 	void fillCategoryTabMenu();
 	void styleLayout();
 	void connectEvents();
+	void setupAvatar();
 	void updateAvatar();
 
 private slots:

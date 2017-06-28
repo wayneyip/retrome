@@ -72,6 +72,53 @@ void DataStore::selectItem(Item* item)
 	printAvatarMap();
 }
 
+Item* DataStore::findEquippedItem(std::string type, std::string category)
+{
+	// Change frontend-provided strings to lowercase
+	std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+	std::transform(category.begin(), category.end(), category.begin(), ::tolower);
+
+	// Check that type and category are in typeCategoryItemMap_
+	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end()
+		|| typeCategoryItemMap_[type].find(category) == typeCategoryItemMap_[type].end())
+	{
+		// If type/category not found, insert error handler
+		std::cout << "ERROR: TYPE " + type + " OR CATEGORY " + category + " NOT FOUND" << std::endl;
+		return new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND");
+	}
+	
+	// Check that category is in avatarItemMap_
+	if (avatarItemMap_.find(category) == avatarItemMap_.end())
+	{
+		// If category not found, insert error handler
+		std::cout << "ERROR: CATEGORY " + category + " NOT FOUND" << std::endl;
+		return new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND");
+	}
+
+	// Lastly, check that there is an item currently equipped
+	// If not, return NULL
+	if (avatarItemMap_[category] == NULL)
+	{
+		return NULL;
+	}
+
+	// If all valid, get the icon for currently equipped item
+	std::string iconName = avatarItemMap_[category]->getIconName();
+
+	// Then use icon to search for currently equipped item
+	std::vector<Item*>& itemList = typeCategoryItemMap_[type][category];
+	for (unsigned int i=0; i < itemList.size(); i++)
+	{
+		if (itemList[i]->getIconName() == iconName)
+		{
+			return itemList[i];
+		}
+	}
+	// If particular item not in category, return error handler
+	std::cout << "ERROR: ITEM NOT FOUND FOR ICON " + iconName << std::endl;
+	return new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND");
+}
+
 std::vector<std::string> DataStore::getTypeCategories(std::string type)
 {
 	// Change frontend-provided string to lowercase
@@ -111,6 +158,7 @@ std::vector<Item*> DataStore::getCategoryItems(std::string type, std::string cat
 		|| typeCategoryItemMap_[type].find(category) == typeCategoryItemMap_[type].end())
 	{
 		// If either type or category not found, insert error handler
+		std::cout << "ERROR: TYPE/CATEGORY NOT FOUND FOR ITEM" << std::endl;
 		items.push_back(new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND"));
 	}
 	else

@@ -71,7 +71,7 @@ void MainApplication::setupLayout()
 	selectionLayout->addWidget(selectedCategoryLabel);
 	selectionLayout->addWidget(selectionItemList);
 
-	updateAvatar();
+	setupAvatar();
 }
 
 void MainApplication::fillCategoryTabMenu()
@@ -124,6 +124,19 @@ void MainApplication::changeCategory()
 		selectionItemList->addItem(
 			new QListWidgetItem(QIcon(QString::fromStdString(itemList_[i]->getIconName())), NULL));
 	}
+
+	// Highlight the item in this category currently equipped by avatar, if any
+	Item* equippedItem = ds_->findEquippedItem(currentType, currentCategory);
+	if (equippedItem)
+	{
+		for (unsigned int i=0; i < itemList_.size(); i++)
+		{
+			if (itemList_[i] == equippedItem)
+			{
+				selectionItemList->setCurrentRow(i);
+			}
+		}
+	}
 }
 
 void MainApplication::selectItem()
@@ -134,11 +147,13 @@ void MainApplication::selectItem()
 	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
 }
 
-void MainApplication::updateAvatar()
+void MainApplication::setupAvatar()
 {
-	QImage body("img/body_body_1.png");
+	// Get head and body sprites
 	QImage head("img/body_head_1.png");
+	QImage body("img/body_body_1.png");
 
+	// Paint head and body onto transparent pixmap
 	QPixmap avatar(body.size());
 	avatar.fill(Qt::transparent);
 	QPainter p(&avatar);
@@ -146,8 +161,26 @@ void MainApplication::updateAvatar()
 	p.drawImage(QPoint(0, 0), head);
 	p.end();
 
+	// Scale up and display image
 	QPixmap avatar_scaled;
 	avatar_scaled.fill(Qt::transparent);
 	avatar_scaled = avatar.scaled(200, 200, Qt::KeepAspectRatio);
 	avatarContainer->setPixmap(avatar_scaled);
+}
+
+void MainApplication::updateAvatar()
+{
+	
+
+	// QPixmap avatar(body.size());
+	// avatar.fill(Qt::transparent);
+	// QPainter p(&avatar);
+	// p.drawImage(QPoint(0, 0), body);
+	// p.drawImage(QPoint(0, 0), head);
+	// p.end();
+
+	// QPixmap avatar_scaled;
+	// avatar_scaled.fill(Qt::transparent);
+	// avatar_scaled = avatar.scaled(200, 200, Qt::KeepAspectRatio);
+	// avatarContainer->setPixmap(avatar_scaled);
 }

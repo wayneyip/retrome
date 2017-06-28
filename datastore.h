@@ -17,6 +17,7 @@ public:
 	~DataStore();
 	void addItem(Item* item);
 	void selectItem(Item* item);
+	Item* findEquippedItem(std::string type, std::string category);
 	std::vector<std::string> getTypeCategories(std::string type);
 	std::vector<Item*> getCategoryItems(std::string type, std::string category);
 
@@ -25,10 +26,11 @@ public:
 
 private:
 	// Map of item types to categories to items
-	// (i.e. "body" to "eyes" to vector<Eyes*>)
+	// (e.g. "body" to "hair" to vector<Hair*>)
 	std::map<std::string, std::map<std::string, std::vector<Item*> > > typeCategoryItemMap_;
 	
 	// Map of avatar's body parts to currently equipped items
+	// (e.g. "hair" to a particular Hair*)
 	std::map<std::string, Item*> avatarItemMap_;
 };
 
