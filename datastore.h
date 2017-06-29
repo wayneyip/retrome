@@ -18,6 +18,7 @@ public:
 	void addItem(Item* item);
 	void selectItem(Item* item);
 	Item* findEquippedItem(std::string type, std::string category);
+	std::vector<std::string> getAllEquippedItems();
 	std::vector<std::string> getTypeCategories(std::string type);
 	std::vector<Item*> getCategoryItems(std::string type, std::string category);
 

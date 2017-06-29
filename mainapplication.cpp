@@ -145,42 +145,62 @@ void MainApplication::selectItem()
 	if (selectionItemList->currentRow() < 0) return;
 
 	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
+
+	updateAvatar();
 }
 
-void MainApplication::setupAvatar()
+QPixmap MainApplication::setupAvatar()
 {
-	// Get head and body sprites
-	QImage head("img/body_head_1.png");
-	QImage body("img/body_body_1.png");
-
-	// Paint head and body onto transparent pixmap
-	QPixmap avatar(body.size());
+	// Set up transparent pixmap
+	getAvatarSize();
+	QPixmap avatar(AVATAR_SIZE);
 	avatar.fill(Qt::transparent);
+	
+	// Get head and body sprites, then paint them on
 	QPainter p(&avatar);
-	p.drawImage(QPoint(0, 0), body);
+	QImage head("img/body_head_1.png");
 	p.drawImage(QPoint(0, 0), head);
+	QImage body("img/body_body_1.png");
+	p.drawImage(QPoint(0, 0), body);
 	p.end();
 
 	// Scale up and display image
+	scaleAvatar(avatar);
+	return avatar;
+}
+
+void MainApplication::getAvatarSize()
+{
+	QImage body("img/body_body_1.png");
+	AVATAR_SIZE = body.size();
+}
+
+void MainApplication::scaleAvatar(QPixmap& avatar)
+{
 	QPixmap avatar_scaled;
 	avatar_scaled.fill(Qt::transparent);
-	avatar_scaled = avatar.scaled(200, 200, Qt::KeepAspectRatio);
+	avatar_scaled = avatar.scaled(2*AVATAR_SIZE, Qt::KeepAspectRatio);
 	avatarContainer->setPixmap(avatar_scaled);
 }
 
 void MainApplication::updateAvatar()
 {
-	
+	QPixmap avatar = setupAvatar();
 
-	// QPixmap avatar(body.size());
-	// avatar.fill(Qt::transparent);
-	// QPainter p(&avatar);
-	// p.drawImage(QPoint(0, 0), body);
-	// p.drawImage(QPoint(0, 0), head);
-	// p.end();
+	// Paint each currently equipped item onto pixmap
+	std::vector<std::string> equippedItems = ds_->getAllEquippedItems();
+	for (unsigned int i=0; i < equippedItems.size(); i++)
+	{
+		paintSprite(avatar, equippedItems[i]);
+	}
+	scaleAvatar(avatar);
+}
 
-	// QPixmap avatar_scaled;
-	// avatar_scaled.fill(Qt::transparent);
-	// avatar_scaled = avatar.scaled(200, 200, Qt::KeepAspectRatio);
-	// avatarContainer->setPixmap(avatar_scaled);
+void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName)
+{
+ 	QPainter p(&avatar);
+ 	QImage sprite(QString::fromStdString(spriteName));
+ 	p.drawImage(QPoint(0, 0), sprite);
+ 	p.end();
+ 	std::cout << "painted " + spriteName << std::endl;
 }

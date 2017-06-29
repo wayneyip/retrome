@@ -23,8 +23,11 @@ public:
 	void fillCategoryTabMenu();
 	void styleLayout();
 	void connectEvents();
-	void setupAvatar();
+	QPixmap setupAvatar();
+	void getAvatarSize();
+	void scaleAvatar(QPixmap& avatar);
 	void updateAvatar();
+	void paintSprite(QPixmap& avatar, std::string spriteName);
 
 private slots:
 	void changeCategory();
@@ -48,6 +51,7 @@ private:
 	// Second row left-side: display panel
 	QVBoxLayout* avatarDisplayLayout;
 	QLabel* avatarContainer;
+	QSize AVATAR_SIZE;
 	
 	// Second row right-upper: category selection menu
 	QVBoxLayout* selectionLayout;

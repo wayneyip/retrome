@@ -69,7 +69,6 @@ void DataStore::selectItem(Item* item)
 		return;
 	}
 	avatarItemMap_[item->getCategory()] = item;
-	printAvatarMap();
 }
 
 Item* DataStore::findEquippedItem(std::string type, std::string category)
@@ -117,6 +116,24 @@ Item* DataStore::findEquippedItem(std::string type, std::string category)
 	// If particular item not in category, return error handler
 	std::cout << "ERROR: ITEM NOT FOUND FOR ICON " + iconName << std::endl;
 	return new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND");
+}
+
+std::vector<std::string> DataStore::getAllEquippedItems()
+{
+	std::vector<std::string> equippedItems;
+	
+	// Iterate through categories, add sprite names of items equipped
+	avatarMap::iterator it;
+	for (it = avatarItemMap_.begin(); it != avatarItemMap_.end(); ++it)
+	{
+		// Check that category has an item equipped
+		// If not, skip to next category
+		if (it->second)
+		{
+			equippedItems.push_back(it->second->getSpriteName());
+		}
+	}
+	return equippedItems;
 }
 
 std::vector<std::string> DataStore::getTypeCategories(std::string type)
