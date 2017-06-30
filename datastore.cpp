@@ -81,7 +81,7 @@ Item* DataStore::findEquippedItem(std::string type, std::string category)
 	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end()
 		|| typeCategoryItemMap_[type].find(category) == typeCategoryItemMap_[type].end())
 	{
-		// If type/category not found, insert error handler
+		// If type/category not found, return error handler
 		std::cout << "ERROR: TYPE " + type + " OR CATEGORY " + category + " NOT FOUND" << std::endl;
 		return new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND");
 	}
@@ -89,7 +89,7 @@ Item* DataStore::findEquippedItem(std::string type, std::string category)
 	// Check that category is in avatarItemMap_
 	if (avatarItemMap_.find(category) == avatarItemMap_.end())
 	{
-		// If category not found, insert error handler
+		// If category not found, return error handler
 		std::cout << "ERROR: CATEGORY " + category + " NOT FOUND" << std::endl;
 		return new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND");
 	}
@@ -122,11 +122,12 @@ std::vector<std::string> DataStore::getAllEquippedItems()
 {
 	std::vector<std::string> equippedItems;
 	
-	// Iterate through categories, add sprite names of items equipped
+	// Iterate through categories
 	avatarMap::iterator it;
 	for (it = avatarItemMap_.begin(); it != avatarItemMap_.end(); ++it)
 	{
 		// Check that category has an item equipped
+		// If yes, store the item's sprite name
 		// If not, skip to next category
 		if (it->second)
 		{
@@ -146,7 +147,7 @@ std::vector<std::string> DataStore::getTypeCategories(std::string type)
 	// Does the type exist?
 	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end())
 	{
-		// If not found, insert error handler
+		// If not found, return error handler
 		categories.push_back("ERROR: NO CATEGORIES FOUND FOR TYPE " + type);
 	}
 	else
@@ -174,7 +175,7 @@ std::vector<Item*> DataStore::getCategoryItems(std::string type, std::string cat
 	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end()
 		|| typeCategoryItemMap_[type].find(category) == typeCategoryItemMap_[type].end())
 	{
-		// If either type or category not found, insert error handler
+		// If either type or category not found, return error handler
 		std::cout << "ERROR: TYPE/CATEGORY NOT FOUND FOR ITEM" << std::endl;
 		items.push_back(new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND"));
 	}

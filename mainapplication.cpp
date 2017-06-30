@@ -36,7 +36,6 @@ void MainApplication::initializeComponents()
 	selectionLayout = new QVBoxLayout();
 	selectionCategoryTabMenu = new QTabWidget();
 	selectionCategoryBodyList = new QListWidget();
-
 	selectionCategoryClothingList = new QListWidget();
 	selectionCategoryPropsList = new QListWidget();
 	selectionCategoryBackdropList = new QListWidget();
@@ -87,6 +86,10 @@ void MainApplication::fillCategoryTabMenu()
 	selectionCategoryBodyList->addItem("Nose");
 	selectionCategoryBodyList->addItem("Mouth");
 	selectionCategoryBodyList->addItem("Ears");	
+
+	selectionCategoryClothingList->addItem("Top");
+	selectionCategoryClothingList->addItem("Bottom");
+	selectionCategoryClothingList->addItem("Shoes");
 }
 
 void MainApplication::styleLayout()
@@ -96,25 +99,31 @@ void MainApplication::styleLayout()
 
 void MainApplication::connectEvents()
 {
-	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
+	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), 
+			this, SLOT(changeCategory()));
+	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), 
+			this, SLOT(changeCategory()));
 	connect(selectionItemList, SIGNAL(currentRowChanged(int)), this, SLOT(selectItem()));
 
 }
 
 void MainApplication::changeCategory()
 {
+	// Get currently active category
+	QListWidget* categoryList = (QListWidget*)selectionCategoryTabMenu->currentWidget();
+
 	// Clear the item list
 	selectionItemList->clear();
 	itemList_.clear();
 
 	// Update category label
-	selectedCategoryLabel->setText(selectionCategoryBodyList->currentItem()->text());
+	selectedCategoryLabel->setText(categoryList->currentItem()->text());
 	
 	// Get the item list for currently selected category
 	std::string currentType 
 		= selectionCategoryTabMenu->tabText(selectionCategoryTabMenu->currentIndex()).toStdString();
 	std::string currentCategory
-		= selectionCategoryBodyList->item(selectionCategoryBodyList->currentRow())->text().toStdString();
+		= categoryList->item(categoryList->currentRow())->text().toStdString();
 
 	itemList_ = ds_->getCategoryItems(currentType, currentCategory);
 
@@ -164,7 +173,7 @@ QPixmap MainApplication::setupAvatar()
 	p.drawImage(QPoint(0, 0), body);
 	p.end();
 
-	// Scale up and display image
+	// Scale up avatar for display
 	scaleAvatar(avatar);
 	return avatar;
 }
@@ -185,14 +194,17 @@ void MainApplication::scaleAvatar(QPixmap& avatar)
 
 void MainApplication::updateAvatar()
 {
+	// Set up avatar's head and body
 	QPixmap avatar = setupAvatar();
 
-	// Paint each currently equipped item onto pixmap
+	// Paint each currently equipped item onto avatar
 	std::vector<std::string> equippedItems = ds_->getAllEquippedItems();
 	for (unsigned int i=0; i < equippedItems.size(); i++)
 	{
 		paintSprite(avatar, equippedItems[i]);
 	}
+
+	// Scale up avatar for display
 	scaleAvatar(avatar);
 }
 
@@ -202,5 +214,4 @@ void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName)
  	QImage sprite(QString::fromStdString(spriteName));
  	p.drawImage(QPoint(0, 0), sprite);
  	p.end();
- 	std::cout << "painted " + spriteName << std::endl;
 }

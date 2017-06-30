@@ -22,10 +22,11 @@ public:
 	std::vector<std::string> getTypeCategories(std::string type);
 	std::vector<Item*> getCategoryItems(std::string type, std::string category);
 
+private:
+	// Debug functions
 	void printItemMap();
 	void printAvatarMap();
 
-private:
 	// Map of item types to categories to items
 	// (e.g. "body" to "hair" to vector<Hair*>)
 	std::map<std::string, std::map<std::string, std::vector<Item*> > > typeCategoryItemMap_;
