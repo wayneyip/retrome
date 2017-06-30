@@ -40,7 +40,7 @@ void MainApplication::initializeComponents()
 	selectionCategoryPropsList = new QListWidget();
 	selectionCategoryBackdropList = new QListWidget();
 
-	selectedCategoryLabel = new QLabel("Hair");
+	selectedCategoryLabel = new QLabel("");
 	selectionItemList = new QListWidget();
 	selectionItemList->setViewMode(QListWidget::IconMode);
 	selectionItemList->setIconSize(QSize(200,200));
@@ -99,22 +99,29 @@ void MainApplication::styleLayout()
 
 void MainApplication::connectEvents()
 {
-	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), 
-			this, SLOT(changeCategory()));
-	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), 
-			this, SLOT(changeCategory()));
+	connect(selectionCategoryTabMenu, SIGNAL(currentChanged(int)), this, SLOT(changeType()));
+	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
+	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionItemList, SIGNAL(currentRowChanged(int)), this, SLOT(selectItem()));
 
 }
 
+void MainApplication::changeType()
+{
+	changeCategory();
+}
+
 void MainApplication::changeCategory()
 {
-	// Get currently active category
+	// Get currently active type
 	QListWidget* categoryList = (QListWidget*)selectionCategoryTabMenu->currentWidget();
 
 	// Clear the item list
 	selectionItemList->clear();
 	itemList_.clear();
+
+	// Do nothing if current type has no category selected 
+	if (categoryList->currentItem() == NULL) return;
 
 	// Update category label
 	selectedCategoryLabel->setText(categoryList->currentItem()->text());
@@ -150,7 +157,7 @@ void MainApplication::changeCategory()
 
 void MainApplication::selectItem()
 {
-	// Do nothing if only category is changed
+	// Do nothing if only the category was changed
 	if (selectionItemList->currentRow() < 0) return;
 
 	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
@@ -214,4 +221,9 @@ void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName)
  	QImage sprite(QString::fromStdString(spriteName));
  	p.drawImage(QPoint(0, 0), sprite);
  	p.end();
+}
+
+void MainApplication::PRINT(std::string statement)
+{
+	std::cout << statement << std::endl;
 }

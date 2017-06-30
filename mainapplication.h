@@ -18,18 +18,23 @@ class MainApplication : public QWidget
 public:
 	MainApplication(DataStore* ds);
 	~MainApplication();
+	
 	void initializeComponents();
 	void setupLayout();
 	void fillCategoryTabMenu();
 	void styleLayout();
 	void connectEvents();
+
 	QPixmap setupAvatar();
 	void getAvatarSize();
 	void scaleAvatar(QPixmap& avatar);
 	void updateAvatar();
 	void paintSprite(QPixmap& avatar, std::string spriteName);
 
+	void PRINT(std::string statement);
+
 private slots:
+	void changeType();
 	void changeCategory();
 	void selectItem();
 
