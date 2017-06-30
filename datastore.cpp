@@ -118,9 +118,9 @@ Item* DataStore::findEquippedItem(std::string type, std::string category)
 	return new Item("NOTFOUND", "NOTFOUND", "NOTFOUND", "NOTFOUND");
 }
 
-std::vector<std::string> DataStore::getAllEquippedItems()
+DataStore::equippedItemHeap DataStore::getAllEquippedItems()
 {
-	std::vector<std::string> equippedItems;
+	equippedItemHeap equippedItems;
 	
 	// Iterate through categories
 	avatarMap::iterator it;
@@ -131,7 +131,7 @@ std::vector<std::string> DataStore::getAllEquippedItems()
 		// If not, skip to next category
 		if (it->second)
 		{
-			equippedItems.push_back(it->second->getSpriteName());
+			equippedItems.push(it->second);
 		}
 	}
 	return equippedItems;

@@ -14,12 +14,14 @@ public:
 	std::string getIconName() const;
 	std::string getType() const;
 	std::string getCategory() const;
+	int getPriority() const;
 
 private:
 	std::string spriteName_;
 	std::string iconName_;
 	std::string type_;
-	std::string category_;	
+	std::string category_;
+	int priority_;	
 };
 
 #endif

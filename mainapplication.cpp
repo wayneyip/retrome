@@ -205,11 +205,20 @@ void MainApplication::updateAvatar()
 	QPixmap avatar = setupAvatar();
 
 	// Paint each currently equipped item onto avatar
-	std::vector<std::string> equippedItems = ds_->getAllEquippedItems();
-	for (unsigned int i=0; i < equippedItems.size(); i++)
+	DataStore::equippedItemHeap equippedItems = ds_->getAllEquippedItems();
+	int equippedItemCount = equippedItems.size();
+	for (int i=0; i < equippedItemCount; i++)
 	{
-		paintSprite(avatar, equippedItems[i]);
+		std::string equippedItem = equippedItems.top()->getSpriteName();
+		paintSprite(avatar, equippedItem);
+		equippedItems.pop();
 	}
+
+	// Paint right hand onto avatar
+ 	QPainter p(&avatar);
+ 	QImage sprite("img/body_hand_1.png");
+ 	p.drawImage(QPoint(0, 0), sprite);
+ 	p.end();	
 
 	// Scale up avatar for display
 	scaleAvatar(avatar);
@@ -217,10 +226,10 @@ void MainApplication::updateAvatar()
 
 void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName)
 {
- 	QPainter p(&avatar);
- 	QImage sprite(QString::fromStdString(spriteName));
- 	p.drawImage(QPoint(0, 0), sprite);
- 	p.end();
+	QPainter p(&avatar);
+	QImage sprite(QString::fromStdString(spriteName));
+	p.drawImage(QPoint(0, 0), sprite);
+	p.end();
 }
 
 void MainApplication::PRINT(std::string statement)
