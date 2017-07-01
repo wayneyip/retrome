@@ -37,6 +37,8 @@ private slots:
 	void changeType();
 	void changeCategory();
 	void selectItem();
+	void saveAvatar();
+	void quit();
 
 private:
 	// Data members
@@ -69,6 +71,11 @@ private:
 	// Second row right-lower: item selection menu
 	QLabel* selectedCategoryLabel;
 	QListWidget* selectionItemList;
+
+	// Third row: save + quit 
+	QHBoxLayout* thirdRowLayout;
+	QPushButton* saveButton;
+	QPushButton* quitButton;
 };
 
 #endif

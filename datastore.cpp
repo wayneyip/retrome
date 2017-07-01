@@ -147,12 +147,12 @@ std::vector<std::string> DataStore::getTypeCategories(std::string type)
 	// Does the type exist?
 	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end())
 	{
-		// If not found, return error handler
+		// If type not found, return error handler
 		categories.push_back("ERROR: NO CATEGORIES FOUND FOR TYPE " + type);
 	}
 	else
 	{
-		// If found, find categories and return them
+		// If type found, find type's categories and return them
 		categoryMap& catMap = typeCategoryItemMap_[type];
 		categoryMap::iterator it;
 		for (it = catMap.begin(); it != catMap.end(); ++it)

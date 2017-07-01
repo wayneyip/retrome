@@ -1,3 +1,5 @@
+#include <QApplication>
+#include <QFileDialog>
 #include <QPainter>
 
 #include "mainapplication.h"
@@ -28,11 +30,14 @@ void MainApplication::initializeComponents()
 	firstRowLayout = new QHBoxLayout();
 	titleLabel = new QLabel("RetroMe");
 
-	// Second row: display + selection
+	// Second row: avatar display + category/item selection
 	secondRowLayout = new QHBoxLayout();
+
+	// Second row left-side: avatar display
 	avatarDisplayLayout = new QVBoxLayout();
 	avatarContainer = new QLabel();
 	
+	// Second row right-upper: category selection
 	selectionLayout = new QVBoxLayout();
 	selectionCategoryTabMenu = new QTabWidget();
 	selectionCategoryBodyList = new QListWidget();
@@ -40,12 +45,14 @@ void MainApplication::initializeComponents()
 	selectionCategoryPropsList = new QListWidget();
 	selectionCategoryBackdropList = new QListWidget();
 
+	// Second row right-lower: item selection
 	selectedCategoryLabel = new QLabel("");
 	selectionItemList = new QListWidget();
-	selectionItemList->setViewMode(QListWidget::IconMode);
-	selectionItemList->setIconSize(QSize(200,200));
-	selectionItemList->setResizeMode(QListWidget::Adjust);
-	selectionItemList->setMovement(QListWidget::Static);
+
+	// Third row: save + quit
+	thirdRowLayout = new QHBoxLayout();
+	saveButton = new QPushButton("Save Avatar");
+	quitButton = new QPushButton("Quit");
 }
 
 void MainApplication::setupLayout()
@@ -60,6 +67,7 @@ void MainApplication::setupLayout()
 	// Second row left-side: avatar display
 	secondRowLayout->addLayout(avatarDisplayLayout);
 	avatarDisplayLayout->addWidget(avatarContainer);
+	setupAvatar();
 
 	// Second row right-upper: category selection
 	secondRowLayout->addLayout(selectionLayout);
@@ -69,17 +77,20 @@ void MainApplication::setupLayout()
 	// Second row right-lower: item selection
 	selectionLayout->addWidget(selectedCategoryLabel);
 	selectionLayout->addWidget(selectionItemList);
+	selectionItemList->setViewMode(QListWidget::IconMode);
+	selectionItemList->setIconSize(QSize(200,200));
+	selectionItemList->setResizeMode(QListWidget::Adjust);
+	selectionItemList->setMovement(QListWidget::Static);
 
-	setupAvatar();
+	// Third row: save + quit	
+	overallLayout->addLayout(thirdRowLayout);
+	thirdRowLayout->addWidget(saveButton);
+	thirdRowLayout->addWidget(quitButton);
 }
 
 void MainApplication::fillCategoryTabMenu()
 {
 	selectionCategoryTabMenu->addTab(selectionCategoryBodyList, "Body");
-	selectionCategoryTabMenu->addTab(selectionCategoryClothingList, "Clothing");
-	selectionCategoryTabMenu->addTab(selectionCategoryPropsList, "Props");
-	selectionCategoryTabMenu->addTab(selectionCategoryBackdropList, "Backdrop");
-
 	selectionCategoryBodyList->addItem("Hair");
 	selectionCategoryBodyList->addItem("Eyebrows");
 	selectionCategoryBodyList->addItem("Eyes");
@@ -87,9 +98,13 @@ void MainApplication::fillCategoryTabMenu()
 	selectionCategoryBodyList->addItem("Mouth");
 	selectionCategoryBodyList->addItem("Ears");	
 
+	selectionCategoryTabMenu->addTab(selectionCategoryClothingList, "Clothing");
 	selectionCategoryClothingList->addItem("Top");
 	selectionCategoryClothingList->addItem("Bottom");
 	selectionCategoryClothingList->addItem("Shoes");
+
+	selectionCategoryTabMenu->addTab(selectionCategoryPropsList, "Props");
+	selectionCategoryTabMenu->addTab(selectionCategoryBackdropList, "Backdrop");
 }
 
 void MainApplication::styleLayout()
@@ -103,6 +118,8 @@ void MainApplication::connectEvents()
 	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionItemList, SIGNAL(currentRowChanged(int)), this, SLOT(selectItem()));
+	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveAvatar()));
+	connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
 
 }
 
@@ -172,12 +189,12 @@ QPixmap MainApplication::setupAvatar()
 	QPixmap avatar(AVATAR_SIZE);
 	avatar.fill(Qt::transparent);
 	
-	// Get head and body sprites, then paint them on
+	// Get body and head sprites, then paint them on
 	QPainter p(&avatar);
-	QImage head("img/body_head_1.png");
-	p.drawImage(QPoint(0, 0), head);
 	QImage body("img/body_body_1.png");
 	p.drawImage(QPoint(0, 0), body);
+	QImage head("img/body_head_1.png");
+	p.drawImage(QPoint(0, 0), head);
 	p.end();
 
 	// Scale up avatar for display
@@ -230,6 +247,26 @@ void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName)
 	QImage sprite(QString::fromStdString(spriteName));
 	p.drawImage(QPoint(0, 0), sprite);
 	p.end();
+}
+
+void MainApplication::saveAvatar()
+{
+	// Ensure user provides filename in PNG
+	QString filename = QFileDialog::getSaveFileName();
+	if (! filename.endsWith(".png"))
+	{
+		filename = filename + ".png";
+	}
+
+	// Resize avatar pixmap (to regular size) and save
+	QPixmap avatarToSave = avatarContainer->pixmap()
+							->scaled(AVATAR_SIZE, Qt::KeepAspectRatio);
+	avatarToSave.save(filename, "PNG");
+}
+
+void MainApplication::quit()
+{
+	QApplication::exit();
 }
 
 void MainApplication::PRINT(std::string statement)
