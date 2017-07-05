@@ -1,4 +1,3 @@
 *.o
-retrome
 retrome.pro
 moc_mainapplication.*

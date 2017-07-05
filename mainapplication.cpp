@@ -1,6 +1,8 @@
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QPainter>
+#include <QFont>
 
 #include "mainapplication.h"
 #include <iostream>
@@ -13,6 +15,7 @@ MainApplication::MainApplication(DataStore* ds) :
 	styleLayout();
 	connectEvents();
 
+	this->setWindowTitle("RetroMe");
 	this->setLayout(overallLayout);
 }
 
@@ -23,7 +26,6 @@ MainApplication::~MainApplication()
 
 void MainApplication::initializeComponents()
 {
-	this->setWindowTitle("RetroMe");
 	overallLayout = new QVBoxLayout();
 
 	// First row: title
@@ -109,6 +111,18 @@ void MainApplication::fillCategoryTabMenu()
 
 void MainApplication::styleLayout()
 {
+	// Center app on screen
+	QRect screenGeometry = QApplication::desktop()->screenGeometry();
+	int x = (screenGeometry.width()-this->width()) / 2;
+	int y = (screenGeometry.height()-this->height()) / 2;
+	this->move(x, y);
+
+	// Style title
+	QFont titleFont;
+	titleFont.setBold(true);
+	titleFont.setPointSize(20);
+	titleLabel->setFont(titleFont);
+
 	
 }
 
@@ -253,7 +267,7 @@ void MainApplication::saveAvatar()
 {
 	// Ensure user provides filename in PNG
 	QString filename = QFileDialog::getSaveFileName();
-	if (! filename.endsWith(".png"))
+	if (! filename.endsWith(".png", Qt::CaseInsensitive))
 	{
 		filename = filename + ".png";
 	}
