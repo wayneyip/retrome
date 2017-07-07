@@ -30,7 +30,10 @@ void MainApplication::initializeComponents()
 
 	// First row: title
 	firstRowLayout = new QHBoxLayout();
-	titleLabel = new QLabel("RetroMe");
+	titleContainer = new QLabel();
+	QImage title("img/title_1.png");
+	// title = title.scaled(2 * title.size());
+	titleContainer->setPixmap(QPixmap::fromImage(title));
 
 	// Second row: avatar display + category/item selection
 	secondRowLayout = new QHBoxLayout();
@@ -61,7 +64,7 @@ void MainApplication::setupLayout()
 {
 	// First row: title
 	overallLayout->addLayout(firstRowLayout);
-	firstRowLayout->addWidget(titleLabel);
+	firstRowLayout->addWidget(titleContainer);
 
 	// Second row: avatar display + category/item selection
 	overallLayout->addLayout(secondRowLayout);
@@ -117,13 +120,10 @@ void MainApplication::styleLayout()
 	int y = (screenGeometry.height()-this->height()) / 2;
 	this->move(x, y);
 
-	// Style title
-	QFont titleFont;
-	titleFont.setBold(true);
-	titleFont.setPointSize(20);
-	titleLabel->setFont(titleFont);
+	// Center title
+	firstRowLayout->setAlignment(titleContainer, Qt::AlignCenter);
 
-	
+
 }
 
 void MainApplication::connectEvents()

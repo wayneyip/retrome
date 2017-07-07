@@ -50,7 +50,7 @@ private:
 
 	// First row: title
 	QHBoxLayout* firstRowLayout;
-	QLabel* titleLabel;
+	QLabel* titleContainer;
 
 	// Second row: display + selection
 	QHBoxLayout* secondRowLayout;
