@@ -8,14 +8,14 @@
 
 **Technologies**: C++, Qt
 
-**Developer**: Yip Wen Qian (Wayne)
+**Developer**: Wayne (Yip Wen Qian)
 
 **Contact**: yipw@usc.edu
 
 ## Current Features
 
 - Parse source images and icons 
-- Customize body parts & clothing
+- Customize body parts and clothing
 - Save avatar to drive
 
 ## Installation

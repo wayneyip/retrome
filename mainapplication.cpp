@@ -131,7 +131,7 @@ void MainApplication::connectEvents()
 	connect(selectionCategoryTabMenu, SIGNAL(currentChanged(int)), this, SLOT(changeType()));
 	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
-	connect(selectionItemList, SIGNAL(currentRowChanged(int)), this, SLOT(selectItem()));
+	connect(selectionItemList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(selectItem(QListWidgetItem*)));
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveAvatar()));
 	connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
 
@@ -181,18 +181,37 @@ void MainApplication::changeCategory()
 			if (itemList_[i] == equippedItem)
 			{
 				selectionItemList->setCurrentRow(i);
+				selectionItemList->setFocus();
+				selectedItem_ = selectionItemList->currentItem();
 			}
 		}
 	}
 }
 
-void MainApplication::selectItem()
+void MainApplication::selectItem(QListWidgetItem* item)
 {
-	// Do nothing if only the category was changed
+  	// Do nothing if only the category was changed
 	if (selectionItemList->currentRow() < 0) return;
 
-	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
+	// If an item was already selected before...
+	if (selectedItem_ != NULL) 
+	{
+		// Check: it the same as the currently selected item?
+		if (item->isSelected() && item == selectedItem_) 
+		{
+			// If so, remove the item from the avatar
+			selectedItem_ = NULL;
+			ds_->removeItem(itemList_[selectionItemList->currentRow()]);
+			updateAvatar();
 
+			// Also deselect the item on the GUI
+			selectionItemList->clearSelection();
+			return;
+		}
+	}
+	// If not, just select the clicked item
+	selectedItem_ = item;
+	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
 	updateAvatar();
 }
 

@@ -27,6 +27,7 @@ public:
 	~DataStore();
 	void addItem(Item* item);
 	void selectItem(Item* item);
+	void removeItem(Item* item);
 	Item* findEquippedItem(std::string type, std::string category);
 	equippedItemHeap getAllEquippedItems();
 	std::vector<std::string> getTypeCategories(std::string type);

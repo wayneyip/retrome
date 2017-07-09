@@ -36,7 +36,7 @@ public:
 private slots:
 	void changeType();
 	void changeCategory();
-	void selectItem();
+	void selectItem(QListWidgetItem* item);
 	void saveAvatar();
 	void quit();
 
@@ -44,6 +44,7 @@ private:
 	// Data members
 	DataStore* ds_;
 	std::vector<Item*> itemList_;
+	QListWidgetItem* selectedItem_;
 
 	// Overall layout
 	QVBoxLayout* overallLayout;

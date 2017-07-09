@@ -71,6 +71,16 @@ void DataStore::selectItem(Item* item)
 	avatarItemMap_[item->getCategory()] = item;
 }
 
+void DataStore::removeItem(Item* item)
+{
+	if (avatarItemMap_.find(item->getCategory()) == avatarItemMap_.end())
+	{
+		std::cout << "ERROR: NO CATEGORY FOUND FOR ITEM " + item->getSpriteName() << std::endl;
+		return;
+	}
+	avatarItemMap_[item->getCategory()] = NULL;
+}
+
 Item* DataStore::findEquippedItem(std::string type, std::string category)
 {
 	// Change frontend-provided strings to lowercase
