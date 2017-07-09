@@ -1,6 +1,5 @@
 <div align="center">
-    <img src="img/title_1.png"></img>
-    
+    <img src="img/title_1.png"></img>  
     <img src="img/readme/avatar_1.png"></img><img src="img/readme/avatar_2.png"></img><img src="img/readme/avatar_3.png"></img>
 </div>
 
