@@ -32,6 +32,8 @@ public:
 	equippedItemHeap getAllEquippedItems();
 	std::vector<std::string> getTypeCategories(std::string type);
 	std::vector<Item*> getCategoryItems(std::string type, std::string category);
+	std::string getCategoryType(std::string category);
+	void selectRandomItems();
 
 private:
 	// Debug functions
@@ -39,12 +41,16 @@ private:
 	void printAvatarMap();
 
 	// Map of item types to categories to items
-	// (e.g. "body" to "hair" to vector<Hair*>)
+	// (e.g. "body" to "hair" to vector<Item*>)
 	std::map<std::string, std::map<std::string, std::vector<Item*> > > typeCategoryItemMap_;
 	
 	// Map of avatar's body parts to currently equipped items
-	// (e.g. "hair" to a particular Hair*)
+	// (e.g. "hair" to a particular Item* with hair sprite & icon)
 	std::map<std::string, Item*> avatarItemMap_;
+
+	// Map of categories to types
+	// (e.g. "hair" to "body")
+	std::map<std::string, std::string> categoryTypeMap_;
 };
 
 #endif

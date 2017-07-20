@@ -17,6 +17,8 @@ MainApplication::MainApplication(DataStore* ds) :
 
 	this->setWindowTitle("RetroMe");
 	this->setLayout(overallLayout);
+
+	randomSelect();
 }
 
 MainApplication::~MainApplication()
@@ -54,8 +56,9 @@ void MainApplication::initializeComponents()
 	selectedCategoryLabel = new QLabel("");
 	selectionItemList = new QListWidget();
 
-	// Third row: save + quit
+	// Third row: random select + save + quit
 	thirdRowLayout = new QHBoxLayout();
+	randomSelectButton = new QPushButton("Random");
 	saveButton = new QPushButton("Save Avatar");
 	quitButton = new QPushButton("Quit");
 }
@@ -87,8 +90,9 @@ void MainApplication::setupLayout()
 	selectionItemList->setResizeMode(QListWidget::Adjust);
 	selectionItemList->setMovement(QListWidget::Static);
 
-	// Third row: save + quit	
+	// Third row: random select + save + quit	
 	overallLayout->addLayout(thirdRowLayout);
+	thirdRowLayout->addWidget(randomSelectButton);
 	thirdRowLayout->addWidget(saveButton);
 	thirdRowLayout->addWidget(quitButton);
 }
@@ -132,6 +136,7 @@ void MainApplication::connectEvents()
 	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionItemList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(selectItem(QListWidgetItem*)));
+	connect(randomSelectButton, SIGNAL(clicked()), this, SLOT(randomSelect()));
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveAvatar()));
 	connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
 
@@ -280,6 +285,35 @@ void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName)
 	QImage sprite(QString::fromStdString(spriteName));
 	p.drawImage(QPoint(0, 0), sprite);
 	p.end();
+}
+
+void MainApplication::randomSelect()
+{
+	ds_->selectRandomItems();
+	updateAvatar();
+
+	if (selectedCategoryLabel->text().isEmpty()) return;
+	
+	// Get the item list for currently selected category
+	std::string currentType 
+		= selectionCategoryTabMenu->tabText(selectionCategoryTabMenu->currentIndex()).toStdString();
+	std::string currentCategory
+		= selectedCategoryLabel->text().toStdString();
+
+	itemList_ = ds_->getCategoryItems(currentType, currentCategory);
+
+	// Highlight the item in this category currently equipped by avatar
+	Item* equippedItem = ds_->findEquippedItem(currentType, currentCategory);
+	
+	for (unsigned int i=0; i < itemList_.size(); i++)
+	{
+		if (itemList_[i] == equippedItem)
+		{
+			selectionItemList->setCurrentRow(i);
+			selectionItemList->setFocus();
+			selectedItem_ = selectionItemList->currentItem();
+		}
+	}
 }
 
 void MainApplication::saveAvatar()

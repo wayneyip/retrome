@@ -37,6 +37,7 @@ private slots:
 	void changeType();
 	void changeCategory();
 	void selectItem(QListWidgetItem* item);
+	void randomSelect();
 	void saveAvatar();
 	void quit();
 
@@ -73,8 +74,9 @@ private:
 	QLabel* selectedCategoryLabel;
 	QListWidget* selectionItemList;
 
-	// Third row: save + quit 
+	// Third row: random select + save + quit 
 	QHBoxLayout* thirdRowLayout;
+	QPushButton* randomSelectButton;
 	QPushButton* saveButton;
 	QPushButton* quitButton;
 };

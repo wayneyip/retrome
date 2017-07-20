@@ -37,6 +37,7 @@ void DataStore::addItem(Item* item)
 		// Also insert the new category into avatarItemMap_
 		Item* NULLPTR = NULL;
 		avatarItemMap_.insert(std::make_pair(category, NULLPTR));
+		categoryTypeMap_.insert(std::make_pair(category, type));
 	}
 	else
 	{
@@ -52,6 +53,7 @@ void DataStore::addItem(Item* item)
 			// Also insert the new category into avatarItemMap_
 			Item* NULLPTR = NULL;
 			avatarItemMap_.insert(std::make_pair(category, NULLPTR));
+			categoryTypeMap_.insert(std::make_pair(category, type));
 		}
 		else
 		{
@@ -88,7 +90,8 @@ Item* DataStore::findEquippedItem(std::string type, std::string category)
 	// If item is equipped, get the icon for currently equipped item
 	std::string iconName = avatarItemMap_[category]->getIconName();
 
-	// Then use icon to search for currently equipped item
+	// Then search through the item's category for that item,
+	// using the icon's name to match
 	std::vector<Item*>& itemList = typeCategoryItemMap_[type][category];
 	for (unsigned int i=0; i < itemList.size(); i++)
 	{
@@ -124,9 +127,10 @@ std::vector<std::string> DataStore::getTypeCategories(std::string type)
 	// Change frontend-provided string to lowercase
 	std::transform(type.begin(), type.end(), type.begin(), ::tolower);
 
-	// Access the type's categories from the overarching map,
-	// then make a container to hold the categories
+	// Access the type's categories from the overarching map
 	categoryMap& catMap = typeCategoryItemMap_[type];
+	
+	// Then make a container to hold the categories
 	std::vector<std::string> categories;
 	
 	// Loop in the category strings, from map to container
@@ -147,6 +151,30 @@ std::vector<Item*> DataStore::getCategoryItems(std::string type, std::string cat
 
 	// Just return the item vector itself
 	return typeCategoryItemMap_[type][category];
+}
+
+std::string DataStore::getCategoryType(std::string category)
+{
+	return categoryTypeMap_[category];
+}
+
+void DataStore::selectRandomItems()
+{
+	srand(time(NULL));
+	avatarMap::iterator it;
+	
+	// For each category...
+	for (it = avatarItemMap_.begin(); it != avatarItemMap_.end(); ++it)
+	{
+		// Get all items under the category
+		std::string category = it->first;
+		std::string type = getCategoryType(category);
+		std::vector<Item*> categoryItems = getCategoryItems(type, category);
+		
+		// Get the index of a (random) item, and equip it
+		int index = rand() % categoryItems.size();
+		selectItem(categoryItems[index]); 
+	}
 }
 
 
