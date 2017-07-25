@@ -1,13 +1,15 @@
 #include <QDirIterator>
 #include <QString>
+#include <fstream>
 #include <sstream>
 #include "item_parser.h"
+#include "util.h"
 
 #include <iostream>
 
 ItemParser::ItemParser()
 {
-
+	error_ = false;
 }
 
 ItemParser::~ItemParser()
@@ -15,7 +17,62 @@ ItemParser::~ItemParser()
 
 }
 
-bool ItemParser::parse(DataStore& ds, std::string imgDir, 
+bool ItemParser::parseCategories(DataStore& ds, std::string categoryFile)
+{
+	// Read category file
+	std::ifstream ifile(categoryFile.c_str());
+	if (ifile.fail())
+	{
+		return true;
+	}
+
+	PState state = READTYPE;
+	std::string line;
+	std::string currentType = "";
+
+	while (!ifile.fail() && !error_)
+	{
+		// Get line and remove whitespace on either end
+		getline(ifile, line);
+		trim(line);
+
+		if (state == READTYPE)
+		{
+			if (line[0] == '-')
+			{
+				state = READCATEGORY;
+				line = line.substr(1, line.size()-1); // Remove bullet at front
+				std::string category = trim(line);
+				ds.addCategory(currentType, category);
+			}
+			else
+			{
+				std::string type = line;
+				ds.addType(type);
+				currentType = type;
+			}
+		}
+		else if (state == READCATEGORY)
+		{
+			if (line[0] == '-')
+			{
+				line = line.substr(1, line.size()-1); // Remove bullet at front
+				std::string category = trim(line);
+				ds.addCategory(currentType, category);
+			}
+			else
+			{
+				state = READTYPE;
+				std::string type = line;
+				ds.addType(type);
+				currentType = type;
+			}			
+		}
+	}
+	return true;
+}
+
+bool ItemParser::parseItems(DataStore& ds, std::string imgDir, 
 						std::string spriteDir, std::string iconDir)
 {
 	// Turn user-provided directory names into (relative) paths

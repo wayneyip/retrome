@@ -9,11 +9,13 @@ class ItemParser
 public:
 	ItemParser();
 	~ItemParser();
-	bool parse(DataStore& ds, std::string imgDir, 
+	bool parseCategories(DataStore& ds, std::string categoryFile);
+	bool parseItems(DataStore& ds, std::string imgDir, 
 				std::string spriteDir, std::string iconDir);
 
 private:
-
+	enum PState { READTYPE, READCATEGORY };
+	bool error_;
 };
 
 #endif

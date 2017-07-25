@@ -8,12 +8,18 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+    if(argc < 2) {
+        cerr << "Please specify a categories file" << endl;
+        return 1;
+    }
+
 	DataStore* ds = new DataStore();
 	ItemParser* itemParser = new ItemParser();
-	bool success = itemParser->parse(*ds, "img", "sprites", "icons");
-	if (success)
+	bool parsedCategories = itemParser->parseCategories(*ds, argv[1]);
+	bool parsedItems = itemParser->parseItems(*ds, "img", "sprites", "icons");
+	if (parsedCategories && parsedItems)
 	{
-		cout << "Successfully parsed all items" << endl;
+		cout << "Successfully parsed all categories & items" << endl;
 	}
 	QApplication app(argc, argv);
 	MainApplication main_app(ds);

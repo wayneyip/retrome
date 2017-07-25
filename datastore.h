@@ -25,9 +25,14 @@ public:
 
 	DataStore();
 	~DataStore();
+
+	void addType(std::string type);
+	void addCategory(std::string type, std::string category);
 	void addItem(Item* item);
+
 	void selectItem(Item* item);
 	void removeItem(Item* item);
+
 	Item* findEquippedItem(std::string type, std::string category);
 	equippedItemHeap getAllEquippedItems();
 	std::vector<std::string> getTypeCategories(std::string type);
@@ -35,10 +40,12 @@ public:
 	std::string getCategoryType(std::string category);
 	void selectRandomItems();
 
-private:
 	// Debug functions
 	void printItemMap();
 	void printAvatarMap();
+	void PRINT(std::string statement);
+
+private:
 
 	// Map of item types to categories to items
 	// (e.g. "body" to "hair" to vector<Item*>)

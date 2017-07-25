@@ -1,4 +1,5 @@
 #include "datastore.h"
+#include "util.h"
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
@@ -13,55 +14,35 @@ DataStore::~DataStore()
 
 }
 
+void DataStore::addType(std::string type)
+{
+	// Add type to master map,
+	// with an empty map of categories to items
+	std::map<std::string, std::vector<Item*> > categoryItemMap;
+	typeCategoryItemMap_.insert(std::make_pair(type, categoryItemMap));
+}
+
+void DataStore::addCategory(std::string type, std::string category)
+{
+	// Add category to master map under its type,
+	// with an empty list of items
+	std::vector<Item*> itemList;
+	typeCategoryItemMap_[type].insert(std::make_pair(category, itemList));
+	
+	// Add category to avatar map,
+	// and second map that traces back to its type
+	Item* NULLITEM = NULL;
+	avatarItemMap_.insert(std::make_pair(category, NULLITEM));
+	categoryTypeMap_.insert(std::make_pair(category, type));
+}
+
 void DataStore::addItem(Item* item)
 {
-	// Register item in typeCategoryItemMap_, under its type and category
+	// Add item to master map under its type and category
 	std::string type = item->getType();
 	std::string category = item->getCategory();
 
-	// Does item type exist?
-	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end())
-	{
-		// If type does not exist, the category does not exist either
-		// Put item in a new vector<Item*>
-		std::vector<Item*> itemList;
-		itemList.push_back(item);
-
-		// Insert item and its category into a new map 
-		std::map<std::string, std::vector<Item*> > categoryItemMap;
-		categoryItemMap.insert(std::make_pair(category, itemList));
-
-		// Insert the new map into typeCategoryItemMap_
-		typeCategoryItemMap_.insert(std::make_pair(type, categoryItemMap));
-
-		// Also insert the new category into avatarItemMap_
-		Item* NULLPTR = NULL;
-		avatarItemMap_.insert(std::make_pair(category, NULLPTR));
-		categoryTypeMap_.insert(std::make_pair(category, type));
-	}
-	else
-	{
-		// If type exists, check if the category exists
-		if (typeCategoryItemMap_[type].find(category) == typeCategoryItemMap_[type].end())
-		{
-			// If category does not exist,
-			// put item in a new vector<Item*>, insert with category
-			std::vector<Item*> itemList;
-			itemList.push_back(item);
-			typeCategoryItemMap_[type].insert(std::make_pair(category, itemList));
-
-			// Also insert the new category into avatarItemMap_
-			Item* NULLPTR = NULL;
-			avatarItemMap_.insert(std::make_pair(category, NULLPTR));
-			categoryTypeMap_.insert(std::make_pair(category, type));
-		}
-		else
-		{
-			// If category exists,
-			// find category and just insert item
-			typeCategoryItemMap_[type][category].push_back(item);
-		}
-	}
+	typeCategoryItemMap_[type][category].push_back(item);
 }
 
 void DataStore::selectItem(Item* item)
@@ -77,8 +58,8 @@ void DataStore::removeItem(Item* item)
 Item* DataStore::findEquippedItem(std::string type, std::string category)
 {
 	// Change frontend-provided strings to lowercase
-	std::transform(type.begin(), type.end(), type.begin(), ::tolower);
-	std::transform(category.begin(), category.end(), category.begin(), ::tolower);
+	convToLower(type);
+	convToLower(category);
 
 	// Check that there is an item currently equipped
 	// If not, return NULL
@@ -125,7 +106,7 @@ DataStore::equippedItemHeap DataStore::getAllEquippedItems()
 std::vector<std::string> DataStore::getTypeCategories(std::string type)
 {
 	// Change frontend-provided string to lowercase
-	std::transform(type.begin(), type.end(), type.begin(), ::tolower);
+	convToLower(type);
 
 	// Access the type's categories from the overarching map
 	categoryMap& catMap = typeCategoryItemMap_[type];
@@ -146,8 +127,8 @@ std::vector<std::string> DataStore::getTypeCategories(std::string type)
 std::vector<Item*> DataStore::getCategoryItems(std::string type, std::string category)
 {
 	// Change frontend-provided strings to lowercase
-	std::transform(type.begin(), type.end(), type.begin(), ::tolower);
-	std::transform(category.begin(), category.end(), category.begin(), ::tolower);	
+	convToLower(type);
+	convToLower(category);
 
 	// Just return the item vector itself
 	return typeCategoryItemMap_[type][category];
@@ -173,7 +154,7 @@ void DataStore::selectRandomItems()
 		
 		// Get the index of a (random) item, and equip it
 		int index = rand() % categoryItems.size();
-		selectItem(categoryItems[index]); 
+		selectItem(categoryItems[index]);
 	}
 }
 
@@ -213,4 +194,9 @@ void DataStore::printAvatarMap()
 		if (it->second) std::cout << it->second->getSpriteName() << std::endl;
 		else std::cout << "NULL" << std::endl;
 	}
+}
+
+void DataStore::PRINT(std::string statement)
+{
+	std::cout << statement << std::endl;
 }
