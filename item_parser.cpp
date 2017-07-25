@@ -43,12 +43,12 @@ bool ItemParser::parseCategories(DataStore& ds, std::string categoryFile)
 				state = READCATEGORY;
 				line = line.substr(1, line.size()-1); // Remove bullet at front
 				std::string category = trim(line);
-				ds.addCategory(currentType, category);
+				error_ = ds.addCategory(currentType, category);
 			}
 			else
 			{
 				std::string type = line;
-				ds.addType(type);
+				error_ = ds.addType(type);
 				currentType = type;
 			}
 		}
@@ -58,18 +58,18 @@ bool ItemParser::parseCategories(DataStore& ds, std::string categoryFile)
 			{
 				line = line.substr(1, line.size()-1); // Remove bullet at front
 				std::string category = trim(line);
-				ds.addCategory(currentType, category);
+				error_ = ds.addCategory(currentType, category);
 			}
 			else
 			{
 				state = READTYPE;
 				std::string type = line;
-				ds.addType(type);
+				error_ = ds.addType(type);
 				currentType = type;
 			}			
 		}
 	}
-	return true;
+	return error_;
 }
 
 bool ItemParser::parseItems(DataStore& ds, std::string imgDir, 
@@ -108,5 +108,5 @@ bool ItemParser::parseItems(DataStore& ds, std::string imgDir,
 		Item* newItem = new Item(spritePath, iconPath, type, category);
 		ds.addItem(newItem);
 	}
-	return true;
+	return error_;
 }

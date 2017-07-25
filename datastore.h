@@ -26,9 +26,9 @@ public:
 	DataStore();
 	~DataStore();
 
-	void addType(std::string type);
-	void addCategory(std::string type, std::string category);
-	void addItem(Item* item);
+	bool addType(std::string type);
+	bool addCategory(std::string type, std::string category);
+	bool addItem(Item* item);
 
 	void selectItem(Item* item);
 	void removeItem(Item* item);

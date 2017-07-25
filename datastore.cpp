@@ -14,16 +14,25 @@ DataStore::~DataStore()
 
 }
 
-void DataStore::addType(std::string type)
+bool DataStore::addType(std::string type)
 {
 	// Add type to master map,
 	// with an empty map of categories to items
 	std::map<std::string, std::vector<Item*> > categoryItemMap;
 	typeCategoryItemMap_.insert(std::make_pair(type, categoryItemMap));
+
+	// No errors found
+	return false;
 }
 
-void DataStore::addCategory(std::string type, std::string category)
+bool DataStore::addCategory(std::string type, std::string category)
 {
+	// Error check: ensure that given type exists
+	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end())
+	{
+		return true;
+	}
+
 	// Add category to master map under its type,
 	// with an empty list of items
 	std::vector<Item*> itemList;
@@ -34,15 +43,32 @@ void DataStore::addCategory(std::string type, std::string category)
 	Item* NULLITEM = NULL;
 	avatarItemMap_.insert(std::make_pair(category, NULLITEM));
 	categoryTypeMap_.insert(std::make_pair(category, type));
+
+	// No errors found
+	return false;
 }
 
-void DataStore::addItem(Item* item)
+bool DataStore::addItem(Item* item)
 {
-	// Add item to master map under its type and category
 	std::string type = item->getType();
 	std::string category = item->getCategory();
 
+	// Error check: ensure that given type and category exist
+	if (typeCategoryItemMap_.find(type) == typeCategoryItemMap_.end())
+	{
+		return true;
+	}
+	else if (typeCategoryItemMap_[type].find(category) 
+				== typeCategoryItemMap_[type].end())
+	{
+		return true;
+	}
+
+	// Add item to master map under its type and category
 	typeCategoryItemMap_[type][category].push_back(item);
+
+	// No errors found
+	return false;
 }
 
 void DataStore::selectItem(Item* item)
