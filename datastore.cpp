@@ -21,6 +21,10 @@ bool DataStore::addType(std::string type)
 	std::map<std::string, std::vector<Item*> > categoryItemMap;
 	typeCategoryItemMap_.insert(std::make_pair(type, categoryItemMap));
 
+	// Repeat for color map
+	std::map<std::string, std::vector<Color*> > categoryColorMap;
+	typeCategoryColorMap_.insert(std::make_pair(type, categoryColorMap));
+
 	// No errors found
 	return false;
 }
@@ -38,11 +42,43 @@ bool DataStore::addCategory(std::string type, std::string category)
 	std::vector<Item*> itemList;
 	typeCategoryItemMap_[type].insert(std::make_pair(category, itemList));
 	
+	// Repeat for color map
+	std::vector<Color*> colorList;
+	typeCategoryColorMap_[type].insert(std::make_pair(category, colorList));
+
 	// Add category to avatar map,
 	// and second map that traces back to its type
 	Item* NULLITEM = NULL;
 	avatarItemMap_.insert(std::make_pair(category, NULLITEM));
 	categoryTypeMap_.insert(std::make_pair(category, type));
+
+	// No errors found
+	return false;
+}
+
+bool DataStore::addColor(Color* color)
+{
+	std::string category = color->getCategory();
+
+	// Error check: ensure that type and category exist
+	if (categoryTypeMap_.find(category) == categoryTypeMap_.end())
+	{
+		return true;
+	}
+	std::string type = categoryTypeMap_[category];
+	if (typeCategoryColorMap_.find(type) 
+			== typeCategoryColorMap_.end())
+	{
+		return true;
+	}
+	if (typeCategoryColorMap_[type].find(category)
+			== typeCategoryColorMap_[type].end())
+	{
+		return true;
+	}
+
+	// Add color to map under its category
+	typeCategoryColorMap_[type][category].push_back(color);
 
 	// No errors found
 	return false;
@@ -58,7 +94,7 @@ bool DataStore::addItem(Item* item)
 	{
 		return true;
 	}
-	else if (typeCategoryItemMap_[type].find(category) 
+	if (typeCategoryItemMap_[type].find(category) 
 				== typeCategoryItemMap_[type].end())
 	{
 		return true;
@@ -200,6 +236,21 @@ void DataStore::printItemMap()
 		{
 			// Iterate categories
 			std::cout << "- " << it2->first << std::endl;
+			std::vector<Color*>& colors = typeCategoryColorMap_[it->first][it2->first];
+			for (unsigned int i=0; i < colors.size(); i++)
+			{
+				std::cout << "~~ ";
+				std::vector<std::vector<unsigned char> > shades = colors[i]->getShades();
+				for (unsigned int j=0; j < shades.size(); j++)
+				{
+					for (unsigned int k=0; k < shades[j].size(); k++)
+					{
+						std::cout << (int)shades[j][k] << " ";
+					}
+					std::cout << "| ";
+				}
+				std::cout << std::endl;
+			}
 			std::vector<Item*>::iterator it3;
 			for (it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
 			{

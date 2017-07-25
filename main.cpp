@@ -20,10 +20,12 @@ int main(int argc, char* argv[])
 	if (categoryParsingError)
 	{
 		cerr << "Error parsing categories!" << endl;
+		return 1;
 	}
 	else if (itemParsingError)
 	{
 		cerr << "Error parsing items!" << endl;
+		return 1;
 	}
 	else
 	{

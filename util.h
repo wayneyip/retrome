@@ -5,6 +5,7 @@
 
 std::string &convToLower(std::string &src);
 
+std::string &removeBullet(std::string &line);
 // trim from start
 std::string &ltrim(std::string &s) ;
 

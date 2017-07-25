@@ -2,8 +2,11 @@
 #include <QString>
 #include <fstream>
 #include <sstream>
+#include <vector>
+
 #include "item_parser.h"
 #include "util.h"
+#include "color.h"
 
 #include <iostream>
 
@@ -26,50 +29,71 @@ bool ItemParser::parseCategories(DataStore& ds, std::string categoryFile)
 		return true;
 	}
 
-	PState state = READTYPE;
 	std::string line;
 	std::string currentType = "";
+	std::string currentCategory = "";
 
 	while (!ifile.fail() && !error_)
 	{
 		// Get line and remove whitespace on either end
-		getline(ifile, line);
+		std::getline(ifile, line);
 		trim(line);
 
-		if (state == READTYPE)
+		if (line[0] == '-') // category
 		{
-			if (line[0] == '-')
-			{
-				state = READCATEGORY;
-				line = line.substr(1, line.size()-1); // Remove bullet at front
-				std::string category = trim(line);
-				error_ = ds.addCategory(currentType, category);
-			}
-			else
-			{
-				std::string type = line;
-				error_ = ds.addType(type);
-				currentType = type;
-			}
+			removeBullet(line);
+			std::string category = trim(line);
+			error_ = ds.addCategory(currentType, category);
+			currentCategory = category;
 		}
-		else if (state == READCATEGORY)
+		else if (line[0] == '~') // color
 		{
-			if (line[0] == '-')
-			{
-				line = line.substr(1, line.size()-1); // Remove bullet at front
-				std::string category = trim(line);
-				error_ = ds.addCategory(currentType, category);
-			}
-			else
-			{
-				state = READTYPE;
-				std::string type = line;
-				error_ = ds.addType(type);
-				currentType = type;
-			}			
+			removeBullet(line);
+			error_ = parseColors(ds, line, currentCategory);
+		}
+		else // type
+		{
+			std::string type = line;
+			error_ = ds.addType(type);
+			currentType = type;
 		}
 	}
+	// ds.printItemMap();
 	return error_;
+}
+
+bool ItemParser::parseColors(DataStore& ds, std::string colors, std::string category)
+{
+	std::stringstream ss(colors);
+	std::string dump; // dummy string to remove opening bracket '[';
+	std::string colorString;
+	std::stringstream colorStream;
+
+	std::vector<std::vector<unsigned char> > colorList;
+
+	while (std::getline(ss, dump, '['))
+	{
+		// Get individual RGB values between brackets
+		std::getline(ss, colorString, ']');
+		colorStream << colorString;
+		int r, g, b;
+		colorStream >> r >> g >> b;
+		std::cout << r << " " << g << " " << b << std::endl;
+
+		// Store RGB values into a vector
+		std::vector<unsigned char> rgb;
+		rgb.push_back((unsigned char) r);
+		rgb.push_back((unsigned char) g);
+		rgb.push_back((unsigned char) b);
+
+		// This vector becomes one shade of the overall Color
+		colorList.push_back(rgb);
+
+		colorStream.clear(); colorStream.str("");
+	}
+	
+	Color* newColor = new Color(colorList, category);
+	return ds.addColor(newColor);
 }
 
 bool ItemParser::parseItems(DataStore& ds, std::string imgDir, 
