@@ -8,6 +8,12 @@ std::string &convToLower(std::string &src)
     return src;
 }
 
+std::string &removeBullet(std::string &line)
+{
+	line = line.substr(1, line.size()-1);
+	return line;
+}
+
 // trim from start
 std::string &ltrim(std::string &s) {
     s.erase(s.begin(), 

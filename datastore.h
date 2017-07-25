@@ -6,6 +6,7 @@
 #include <string>
 #include <queue>
 #include "item.h"
+#include "color.h"
 
 struct equipPriority
 {
@@ -28,6 +29,7 @@ public:
 
 	bool addType(std::string type);
 	bool addCategory(std::string type, std::string category);
+	bool addColor(Color* color);
 	bool addItem(Item* item);
 
 	void selectItem(Item* item);
@@ -58,6 +60,14 @@ private:
 	// Map of categories to types
 	// (e.g. "hair" to "body")
 	std::map<std::string, std::string> categoryTypeMap_;
+
+	// Map of item types to categories to list of available colors
+	// (e.g. "body" to hair" to black, brown, blonde)
+	std::map<std::string, std::map<std::string, std::vector<Color*> > > typeCategoryColorMap_;
+
+	// Map of avatar's body parts to currently selected colors
+	// (e.g. "hair" to black)
+	std::map<std::string, Color*> avatarColorMap_;
 };
 
 #endif
