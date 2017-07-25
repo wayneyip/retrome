@@ -15,12 +15,21 @@ int main(int argc, char* argv[])
 
 	DataStore* ds = new DataStore();
 	ItemParser* itemParser = new ItemParser();
-	bool parsedCategories = itemParser->parseCategories(*ds, argv[1]);
-	bool parsedItems = itemParser->parseItems(*ds, "img", "sprites", "icons");
-	if (parsedCategories && parsedItems)
+	bool categoryParsingError = itemParser->parseCategories(*ds, argv[1]);
+	bool itemParsingError = itemParser->parseItems(*ds, "img", "sprites", "icons");
+	if (categoryParsingError)
+	{
+		cerr << "Error parsing categories!" << endl;
+	}
+	else if (itemParsingError)
+	{
+		cerr << "Error parsing items!" << endl;
+	}
+	else
 	{
 		cout << "Successfully parsed all categories & items" << endl;
 	}
+
 	QApplication app(argc, argv);
 	MainApplication main_app(ds);
 	main_app.show();
