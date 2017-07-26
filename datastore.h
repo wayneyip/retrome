@@ -35,12 +35,18 @@ public:
 	void selectItem(Item* item);
 	void removeItem(Item* item);
 
-	Item* findEquippedItem(std::string type, std::string category);
+	Item* findEquippedItem(std::string category);
 	equippedItemHeap getAllEquippedItems();
+
 	std::vector<std::string> getTypeCategories(std::string type);
-	std::vector<Item*> getCategoryItems(std::string type, std::string category);
+	std::vector<Item*> getCategoryItems(std::string category);
 	std::string getCategoryType(std::string category);
+	
 	void selectRandomItems();
+
+	std::vector<Color*> getCategoryColors(std::string category);
+	void changeColor(Color* color);
+	Color* findSelectedColor(std::string category);
 
 	// Debug functions
 	void printItemMap();

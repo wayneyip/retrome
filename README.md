@@ -17,6 +17,7 @@
 - Parse source images and icons 
 - Customize body parts and clothing
 - Randomly assign body parts and clothing
+- Change colors of body parts
 - Save avatar to drive
 
 ## Installation

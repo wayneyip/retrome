@@ -117,33 +117,13 @@ void DataStore::removeItem(Item* item)
 	avatarItemMap_[item->getCategory()] = NULL;
 }
 
-Item* DataStore::findEquippedItem(std::string type, std::string category)
+Item* DataStore::findEquippedItem(std::string category)
 {
 	// Change frontend-provided strings to lowercase
-	convToLower(type);
 	convToLower(category);
+	std::string type = getCategoryType(category);
 
-	// Check that there is an item currently equipped
-	// If not, return NULL
-	if (avatarItemMap_[category] == NULL)
-	{
-		return NULL;
-	}
-
-	// If item is equipped, get the icon for currently equipped item
-	std::string iconName = avatarItemMap_[category]->getIconName();
-
-	// Then search through the item's category for that item,
-	// using the icon's name to match
-	std::vector<Item*>& itemList = typeCategoryItemMap_[type][category];
-	for (unsigned int i=0; i < itemList.size(); i++)
-	{
-		if (itemList[i]->getIconName() == iconName)
-		{
-			return itemList[i];
-		}
-	}
-	return NULL;
+	return avatarItemMap_[category];
 }
 
 DataStore::equippedItemHeap DataStore::getAllEquippedItems()
@@ -186,11 +166,11 @@ std::vector<std::string> DataStore::getTypeCategories(std::string type)
 	return categories;
 }
 
-std::vector<Item*> DataStore::getCategoryItems(std::string type, std::string category)
+std::vector<Item*> DataStore::getCategoryItems(std::string category)
 {
 	// Change frontend-provided strings to lowercase
-	convToLower(type);
 	convToLower(category);
+	std::string type = getCategoryType(category);
 
 	// Just return the item vector itself
 	return typeCategoryItemMap_[type][category];
@@ -211,13 +191,35 @@ void DataStore::selectRandomItems()
 	{
 		// Get all items under the category
 		std::string category = it->first;
-		std::string type = getCategoryType(category);
-		std::vector<Item*> categoryItems = getCategoryItems(type, category);
+		std::vector<Item*> categoryItems = getCategoryItems(category);
 		
 		// Get the index of a (random) item, and equip it
 		int index = rand() % categoryItems.size();
 		selectItem(categoryItems[index]);
 	}
+}
+
+std::vector<Color*> DataStore::getCategoryColors(std::string category)
+{
+	// Change frontend-provided strings to lowercase
+	convToLower(category);
+	std::string type = getCategoryType(category);
+
+	return typeCategoryColorMap_[type][category];
+}
+
+void DataStore::changeColor(Color* color)
+{
+	avatarColorMap_[color->getCategory()] = color;
+}
+
+Color* DataStore::findSelectedColor(std::string category)
+{
+	// Change frontend-provided strings to lowercase
+	convToLower(category);
+	std::string type = getCategoryType(category);
+
+	return avatarColorMap_[category];
 }
 
 
@@ -240,7 +242,7 @@ void DataStore::printItemMap()
 			for (unsigned int i=0; i < colors.size(); i++)
 			{
 				std::cout << "~~ ";
-				std::vector<std::vector<unsigned char> > shades = colors[i]->getShades();
+				std::vector<Color::shade> shades = colors[i]->getShades();
 				for (unsigned int j=0; j < shades.size(); j++)
 				{
 					for (unsigned int k=0; k < shades[j].size(); k++)

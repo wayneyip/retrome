@@ -54,6 +54,7 @@ void MainApplication::initializeComponents()
 
 	// Second row right-lower: item selection
 	selectedCategoryLabel = new QLabel("");
+	selectionColorList = new QListWidget();
 	selectionItemList = new QListWidget();
 
 	// Third row: random select + save + quit
@@ -84,6 +85,10 @@ void MainApplication::setupLayout()
 
 	// Second row right-lower: item selection
 	selectionLayout->addWidget(selectedCategoryLabel);
+	selectionLayout->addWidget(selectionColorList);
+	selectionColorList->setViewMode(QListWidget::IconMode);
+	selectionColorList->setResizeMode(QListWidget::Adjust);
+	selectionColorList->setMovement(QListWidget::Static);
 	selectionLayout->addWidget(selectionItemList);
 	selectionItemList->setViewMode(QListWidget::IconMode);
 	selectionItemList->setIconSize(QSize(200,200));
@@ -127,7 +132,8 @@ void MainApplication::styleLayout()
 	// Center title
 	firstRowLayout->setAlignment(titleContainer, Qt::AlignCenter);
 
-
+	// Resize color tab
+	selectionColorList->setMaximumHeight(50);
 }
 
 void MainApplication::connectEvents()
@@ -135,6 +141,7 @@ void MainApplication::connectEvents()
 	connect(selectionCategoryTabMenu, SIGNAL(currentChanged(int)), this, SLOT(changeType()));
 	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
+	connect(selectionColorList, SIGNAL(currentRowChanged(int)), this, SLOT(changeColor()));
 	connect(selectionItemList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(selectItem(QListWidgetItem*)));
 	connect(randomSelectButton, SIGNAL(clicked()), this, SLOT(randomSelect()));
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveAvatar()));
@@ -149,12 +156,14 @@ void MainApplication::changeType()
 
 void MainApplication::changeCategory()
 {
-	// Get currently active type
-	QListWidget* categoryList = (QListWidget*)selectionCategoryTabMenu->currentWidget();
-
-	// Clear the item list
+	// Clear the item and color lists
 	selectionItemList->clear();
 	itemList_.clear();
+	selectionColorList->clear();
+	colorList_.clear();
+
+	// Get currently active type
+	QListWidget* categoryList = (QListWidget*)selectionCategoryTabMenu->currentWidget();
 
 	// Do nothing if current type has no category selected 
 	if (categoryList->currentItem() == NULL) return;
@@ -163,12 +172,10 @@ void MainApplication::changeCategory()
 	selectedCategoryLabel->setText(categoryList->currentItem()->text());
 	
 	// Get the item list for currently selected category
-	std::string currentType 
-		= selectionCategoryTabMenu->tabText(selectionCategoryTabMenu->currentIndex()).toStdString();
 	std::string currentCategory
 		= categoryList->item(categoryList->currentRow())->text().toStdString();
 
-	itemList_ = ds_->getCategoryItems(currentType, currentCategory);
+	itemList_ = ds_->getCategoryItems(currentCategory);
 
 	// Display each item's icons
 	for (unsigned int i=0; i < itemList_.size(); i++)
@@ -177,8 +184,19 @@ void MainApplication::changeCategory()
 			new QListWidgetItem(QIcon(QString::fromStdString(itemList_[i]->getIconName())), NULL));
 	}
 
+	// Display the colors for currently selected category
+	colorList_ = ds_->getCategoryColors(currentCategory);
+
+	for (unsigned int i=0; i < colorList_.size(); i++)
+	{
+		QPixmap pixmap(AVATAR_SIZE/2);
+		Color::shade mainColor = colorList_[i]->getMainColor();
+		pixmap.fill(QColor(mainColor[0], mainColor[1], mainColor[2]));
+		selectionColorList->addItem(new QListWidgetItem(QIcon(pixmap), NULL));
+	}
+
 	// Highlight the item in this category currently equipped by avatar, if any
-	Item* equippedItem = ds_->findEquippedItem(currentType, currentCategory);
+	Item* equippedItem = ds_->findEquippedItem(currentCategory);
 	if (equippedItem)
 	{
 		for (unsigned int i=0; i < itemList_.size(); i++)
@@ -186,11 +204,32 @@ void MainApplication::changeCategory()
 			if (itemList_[i] == equippedItem)
 			{
 				selectionItemList->setCurrentRow(i);
-				selectionItemList->setFocus();
 				selectedItem_ = selectionItemList->currentItem();
 			}
 		}
 	}
+
+	// Highlight the color in this category currently selected, if any
+	Color* selectedColor = ds_->findSelectedColor(currentCategory);
+	if (selectedColor)
+	{
+		for (unsigned int i=0; i < colorList_.size(); i++)
+		{
+			if (colorList_[i] == selectedColor)
+			{
+				selectionColorList->setCurrentRow(i);
+			}
+		}
+	}
+}
+
+void MainApplication::changeColor()
+{
+	// Do nothing if only the category was changed
+	if (selectionColorList->currentRow() < 0) return;
+
+	ds_->changeColor(colorList_[selectionColorList->currentRow()]);
+	updateAvatar();
 }
 
 void MainApplication::selectItem(QListWidgetItem* item)
@@ -265,7 +304,12 @@ void MainApplication::updateAvatar()
 	for (int i=0; i < equippedItemCount; i++)
 	{
 		std::string equippedItem = equippedItems.top()->getSpriteName();
-		paintSprite(avatar, equippedItem);
+		
+		// Apply colors to item sprite, if any
+		std::string category = equippedItems.top()->getCategory();
+		Color* selectedColor = ds_->findSelectedColor(category);
+		
+		paintSprite(avatar, equippedItem, selectedColor);
 		equippedItems.pop();
 	}
 
@@ -279,10 +323,19 @@ void MainApplication::updateAvatar()
 	scaleAvatar(avatar);
 }
 
-void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName)
+void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName, Color* color)
 {
 	QPainter p(&avatar);
 	QImage sprite(QString::fromStdString(spriteName));
+	if (color)
+	{
+		std::vector<Color::shade> shades = color->getShades();
+		for (unsigned int i=0; i < shades.size(); i++)
+		{
+			QColor shade(shades[i][0], shades[i][1], shades[i][2]);
+			sprite.setColor(2 + i, shade.rgb());
+		}
+	}
 	p.drawImage(QPoint(0, 0), sprite);
 	p.end();
 }
@@ -295,22 +348,19 @@ void MainApplication::randomSelect()
 	if (selectedCategoryLabel->text().isEmpty()) return;
 	
 	// Get the item list for currently selected category
-	std::string currentType 
-		= selectionCategoryTabMenu->tabText(selectionCategoryTabMenu->currentIndex()).toStdString();
 	std::string currentCategory
 		= selectedCategoryLabel->text().toStdString();
 
-	itemList_ = ds_->getCategoryItems(currentType, currentCategory);
+	itemList_ = ds_->getCategoryItems(currentCategory);
 
 	// Highlight the item in this category currently equipped by avatar
-	Item* equippedItem = ds_->findEquippedItem(currentType, currentCategory);
+	Item* equippedItem = ds_->findEquippedItem(currentCategory);
 	
 	for (unsigned int i=0; i < itemList_.size(); i++)
 	{
 		if (itemList_[i] == equippedItem)
 		{
 			selectionItemList->setCurrentRow(i);
-			selectionItemList->setFocus();
 			selectedItem_ = selectionItemList->currentItem();
 		}
 	}
