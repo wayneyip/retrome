@@ -29,13 +29,14 @@ public:
 	void getAvatarSize();
 	void scaleAvatar(QPixmap& avatar);
 	void updateAvatar();
-	void paintSprite(QPixmap& avatar, std::string spriteName);
+	void paintSprite(QPixmap& avatar, std::string spriteName, Color* color);
 
 	void PRINT(std::string statement);
 
 private slots:
 	void changeType();
 	void changeCategory();
+	void changeColor();
 	void selectItem(QListWidgetItem* item);
 	void randomSelect();
 	void saveAvatar();
@@ -45,6 +46,7 @@ private:
 	// Data members
 	DataStore* ds_;
 	std::vector<Item*> itemList_;
+	std::vector<Color*> colorList_;
 	QListWidgetItem* selectedItem_;
 
 	// Overall layout
@@ -72,6 +74,7 @@ private:
 
 	// Second row right-lower: item selection menu
 	QLabel* selectedCategoryLabel;
+	QListWidget* selectionColorList;
 	QListWidget* selectionItemList;
 
 	// Third row: random select + save + quit 

@@ -7,16 +7,18 @@
 class Color
 {
 public:
-	Color(const std::vector<std::vector<unsigned char> > shades,
+	typedef std::vector<unsigned int> shade;
+
+	Color(const std::vector<shade> shades,
 		const std::string category);
 	~Color();
-	std::vector<unsigned char> getMainColor() const;
-	std::vector<std::vector<unsigned char> > getShades() const;
+	shade getMainColor() const;
+	std::vector<shade> getShades() const;
 	std::string getCategory() const;
 
 private:
-	std::vector<unsigned char> mainColor_;
-	std::vector<std::vector<unsigned char> > shades_;
+	shade mainColor_;
+	std::vector<shade> shades_;
 	std::string category_;
 };
 

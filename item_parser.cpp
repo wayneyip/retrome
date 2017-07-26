@@ -69,7 +69,7 @@ bool ItemParser::parseColors(DataStore& ds, std::string colors, std::string cate
 	std::string colorString;
 	std::stringstream colorStream;
 
-	std::vector<std::vector<unsigned char> > colorList;
+	std::vector<Color::shade> colorList;
 
 	while (std::getline(ss, dump, '['))
 	{
@@ -78,13 +78,12 @@ bool ItemParser::parseColors(DataStore& ds, std::string colors, std::string cate
 		colorStream << colorString;
 		int r, g, b;
 		colorStream >> r >> g >> b;
-		std::cout << r << " " << g << " " << b << std::endl;
 
 		// Store RGB values into a vector
-		std::vector<unsigned char> rgb;
-		rgb.push_back((unsigned char) r);
-		rgb.push_back((unsigned char) g);
-		rgb.push_back((unsigned char) b);
+		Color::shade rgb;
+		rgb.push_back(r);
+		rgb.push_back(g);
+		rgb.push_back(b);
 
 		// This vector becomes one shade of the overall Color
 		colorList.push_back(rgb);

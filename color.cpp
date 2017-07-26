@@ -1,6 +1,6 @@
 #include "color.h"
 
-Color::Color(const std::vector<std::vector<unsigned char> > shades,
+Color::Color(const std::vector<shade> shades,
 			const std::string category) :
 	shades_(shades),
 	category_(category)
@@ -13,12 +13,12 @@ Color::~Color()
 
 }
 
-std::vector<unsigned char> Color::getMainColor() const
+Color::shade Color::getMainColor() const
 {
 	return mainColor_;
 }
 
-std::vector<std::vector<unsigned char> > Color::getShades() const
+std::vector<Color::shade> Color::getShades() const
 {
 	return shades_;
 }
