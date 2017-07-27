@@ -54,8 +54,8 @@ void MainApplication::initializeComponents()
 
 	// Second row right-lower: item selection
 	selectedCategoryLabel = new QLabel("");
-	selectionColorList = new QListWidget();
 	selectionItemList = new QListWidget();
+	selectionColorList = new QListWidget();
 
 	// Third row: random select + save + quit
 	thirdRowLayout = new QHBoxLayout();
@@ -85,15 +85,15 @@ void MainApplication::setupLayout()
 
 	// Second row right-lower: item selection
 	selectionLayout->addWidget(selectedCategoryLabel);
-	selectionLayout->addWidget(selectionColorList);
-	selectionColorList->setViewMode(QListWidget::IconMode);
-	selectionColorList->setResizeMode(QListWidget::Adjust);
-	selectionColorList->setMovement(QListWidget::Static);
 	selectionLayout->addWidget(selectionItemList);
 	selectionItemList->setViewMode(QListWidget::IconMode);
 	selectionItemList->setIconSize(QSize(200,200));
 	selectionItemList->setResizeMode(QListWidget::Adjust);
 	selectionItemList->setMovement(QListWidget::Static);
+	selectionLayout->addWidget(selectionColorList);
+	selectionColorList->setViewMode(QListWidget::IconMode);
+	selectionColorList->setResizeMode(QListWidget::Adjust);
+	selectionColorList->setMovement(QListWidget::Static);
 
 	// Third row: random select + save + quit	
 	overallLayout->addLayout(thirdRowLayout);
@@ -105,6 +105,8 @@ void MainApplication::setupLayout()
 void MainApplication::fillCategoryTabMenu()
 {
 	selectionCategoryTabMenu->addTab(selectionCategoryBodyList, "Body");
+	selectionCategoryBodyList->addItem("Body");
+	selectionCategoryBodyList->addItem("Face");
 	selectionCategoryBodyList->addItem("Hair");
 	selectionCategoryBodyList->addItem("Eyebrows");
 	selectionCategoryBodyList->addItem("Eyes");
@@ -141,8 +143,8 @@ void MainApplication::connectEvents()
 	connect(selectionCategoryTabMenu, SIGNAL(currentChanged(int)), this, SLOT(changeType()));
 	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
 	connect(selectionCategoryClothingList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
+	connect(selectionItemList, SIGNAL(currentRowChanged(int)), this, SLOT(selectItem()));
 	connect(selectionColorList, SIGNAL(currentRowChanged(int)), this, SLOT(changeColor()));
-	connect(selectionItemList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(selectItem(QListWidgetItem*)));
 	connect(randomSelectButton, SIGNAL(clicked()), this, SLOT(randomSelect()));
 	connect(saveButton, SIGNAL(clicked()), this, SLOT(saveAvatar()));
 	connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
@@ -204,7 +206,6 @@ void MainApplication::changeCategory()
 			if (itemList_[i] == equippedItem)
 			{
 				selectionItemList->setCurrentRow(i);
-				selectedItem_ = selectionItemList->currentItem();
 			}
 		}
 	}
@@ -223,6 +224,16 @@ void MainApplication::changeCategory()
 	}
 }
 
+void MainApplication::selectItem()
+{
+  	// Do nothing if only the category was changed
+	if (selectionItemList->currentRow() < 0) return;
+
+	// If not, just select the clicked item
+	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
+	updateAvatar();
+}
+
 void MainApplication::changeColor()
 {
 	// Do nothing if only the category was changed
@@ -232,47 +243,12 @@ void MainApplication::changeColor()
 	updateAvatar();
 }
 
-void MainApplication::selectItem(QListWidgetItem* item)
-{
-  	// Do nothing if only the category was changed
-	if (selectionItemList->currentRow() < 0) return;
-
-	// If an item was already selected before...
-	if (selectedItem_ != NULL) 
-	{
-		// Check: it the same as the currently selected item?
-		if (item->isSelected() && item == selectedItem_) 
-		{
-			// If so, remove the item from the avatar
-			selectedItem_ = NULL;
-			ds_->removeItem(itemList_[selectionItemList->currentRow()]);
-			updateAvatar();
-
-			// Also deselect the item on the GUI
-			selectionItemList->clearSelection();
-			return;
-		}
-	}
-	// If not, just select the clicked item
-	selectedItem_ = item;
-	ds_->selectItem(itemList_[selectionItemList->currentRow()]);
-	updateAvatar();
-}
-
 QPixmap MainApplication::setupAvatar()
 {
 	// Set up transparent pixmap
 	getAvatarSize();
 	QPixmap avatar(AVATAR_SIZE);
 	avatar.fill(Qt::transparent);
-	
-	// Get body and head sprites, then paint them on
-	QPainter p(&avatar);
-	QImage body("img/body_body_1.png");
-	p.drawImage(QPoint(0, 0), body);
-	QImage head("img/body_head_1.png");
-	p.drawImage(QPoint(0, 0), head);
-	p.end();
 
 	// Scale up avatar for display
 	scaleAvatar(avatar);
@@ -314,10 +290,8 @@ void MainApplication::updateAvatar()
 	}
 
 	// Paint right hand onto avatar
- 	QPainter p(&avatar);
- 	QImage sprite("img/body_hand_1.png");
- 	p.drawImage(QPoint(0, 0), sprite);
- 	p.end();	
+	Color* skinColor = ds_->findSelectedColor("body");
+	paintSprite(avatar, "img/body_hand_1.png", skinColor);
 
 	// Scale up avatar for display
 	scaleAvatar(avatar);
@@ -361,7 +335,6 @@ void MainApplication::randomSelect()
 		if (itemList_[i] == equippedItem)
 		{
 			selectionItemList->setCurrentRow(i);
-			selectedItem_ = selectionItemList->currentItem();
 		}
 	}
 }

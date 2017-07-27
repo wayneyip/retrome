@@ -36,8 +36,8 @@ public:
 private slots:
 	void changeType();
 	void changeCategory();
+	void selectItem();
 	void changeColor();
-	void selectItem(QListWidgetItem* item);
 	void randomSelect();
 	void saveAvatar();
 	void quit();
@@ -47,7 +47,6 @@ private:
 	DataStore* ds_;
 	std::vector<Item*> itemList_;
 	std::vector<Color*> colorList_;
-	QListWidgetItem* selectedItem_;
 
 	// Overall layout
 	QVBoxLayout* overallLayout;
@@ -74,8 +73,8 @@ private:
 
 	// Second row right-lower: item selection menu
 	QLabel* selectedCategoryLabel;
-	QListWidget* selectionColorList;
 	QListWidget* selectionItemList;
+	QListWidget* selectionColorList;
 
 	// Third row: random select + save + quit 
 	QHBoxLayout* thirdRowLayout;

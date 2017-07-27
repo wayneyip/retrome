@@ -9,18 +9,20 @@ Item::Item(const std::string spriteName, const std::string iconName,
 {
 	if (type_ == "body")
 	{
-		if (category_ == "eyes") 			priority_ = 0;
-		else if (category_ == "nose") 		priority_ = 1;
-		else if (category_ == "mouth") 		priority_ = 2;
-		else if (category_ == "eyebrows") 	priority_ = 3;
-		else if (category_ == "hair") 		priority_ = 4;
-		else if (category_ == "ears") 		priority_ = 5;
+			 if (category_ == "body")		priority_ = 0;
+		else if (category_ == "face")		priority_ = 1;
+		else if (category_ == "eyes") 		priority_ = 2;
+		else if (category_ == "nose") 		priority_ = 3;
+		else if (category_ == "mouth") 		priority_ = 4;
+		else if (category_ == "eyebrows") 	priority_ = 5;
+		else if (category_ == "hair") 		priority_ = 6;
+		else if (category_ == "ears") 		priority_ = 7;
 	}
 	else if (type_ == "clothing")
 	{
-		if (category_ == "bottom") 			priority_ = 6;
-		else if (category_ == "top")		priority_ = 7;
-		else if (category_ == "shoes") 		priority_ = 8;		
+			 if (category_ == "bottom") 	priority_ = 8;
+		else if (category_ == "top")		priority_ = 9;
+		else if (category_ == "shoes") 		priority_ = 10;		
 	}
 }
 

@@ -32,16 +32,13 @@ public:
 	bool addColor(Color* color);
 	bool addItem(Item* item);
 
-	void selectItem(Item* item);
-	void removeItem(Item* item);
+	std::vector<std::string> getTypeCategories(std::string type);
+	std::string getCategoryType(std::string category);
 
+	std::vector<Item*> getCategoryItems(std::string category);
+	void selectItem(Item* item);
 	Item* findEquippedItem(std::string category);
 	equippedItemHeap getAllEquippedItems();
-
-	std::vector<std::string> getTypeCategories(std::string type);
-	std::vector<Item*> getCategoryItems(std::string category);
-	std::string getCategoryType(std::string category);
-	
 	void selectRandomItems();
 
 	std::vector<Color*> getCategoryColors(std::string category);

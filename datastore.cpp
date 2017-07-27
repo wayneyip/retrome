@@ -107,14 +107,45 @@ bool DataStore::addItem(Item* item)
 	return false;
 }
 
+std::vector<std::string> DataStore::getTypeCategories(std::string type)
+{
+	// Change frontend-provided string to lowercase
+	convToLower(type);
+
+	// Access the type's categories from the overarching map
+	categoryMap& catMap = typeCategoryItemMap_[type];
+	
+	// Then make a container to hold the categories
+	std::vector<std::string> categories;
+	
+	// Loop in the category strings, from map to container
+	categoryMap::iterator it;
+	for (it = catMap.begin(); it != catMap.end(); ++it)
+	{
+		categories.push_back(it->first);
+	} 
+
+	return categories;
+}
+
+std::string DataStore::getCategoryType(std::string category)
+{
+	return categoryTypeMap_[category];
+}
+
+std::vector<Item*> DataStore::getCategoryItems(std::string category)
+{
+	// Change frontend-provided strings to lowercase
+	convToLower(category);
+	std::string type = getCategoryType(category);
+
+	// Just return the item vector itself
+	return typeCategoryItemMap_[type][category];
+}
+
 void DataStore::selectItem(Item* item)
 {
 	avatarItemMap_[item->getCategory()] = item;
-}
-
-void DataStore::removeItem(Item* item)
-{
-	avatarItemMap_[item->getCategory()] = NULL;
 }
 
 Item* DataStore::findEquippedItem(std::string category)
@@ -143,42 +174,6 @@ DataStore::equippedItemHeap DataStore::getAllEquippedItems()
 		}
 	}
 	return equippedItems;
-}
-
-std::vector<std::string> DataStore::getTypeCategories(std::string type)
-{
-	// Change frontend-provided string to lowercase
-	convToLower(type);
-
-	// Access the type's categories from the overarching map
-	categoryMap& catMap = typeCategoryItemMap_[type];
-	
-	// Then make a container to hold the categories
-	std::vector<std::string> categories;
-	
-	// Loop in the category strings, from map to container
-	categoryMap::iterator it;
-	for (it = catMap.begin(); it != catMap.end(); ++it)
-	{
-		categories.push_back(it->first);
-	} 
-
-	return categories;
-}
-
-std::vector<Item*> DataStore::getCategoryItems(std::string category)
-{
-	// Change frontend-provided strings to lowercase
-	convToLower(category);
-	std::string type = getCategoryType(category);
-
-	// Just return the item vector itself
-	return typeCategoryItemMap_[type][category];
-}
-
-std::string DataStore::getCategoryType(std::string category)
-{
-	return categoryTypeMap_[category];
 }
 
 void DataStore::selectRandomItems()
@@ -218,6 +213,11 @@ Color* DataStore::findSelectedColor(std::string category)
 	// Change frontend-provided strings to lowercase
 	convToLower(category);
 	std::string type = getCategoryType(category);
+
+	if (category == "face" || category == "ears")
+	{
+		return avatarColorMap_["body"];
+	}
 
 	return avatarColorMap_[category];
 }
