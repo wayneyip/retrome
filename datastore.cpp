@@ -168,9 +168,20 @@ DataStore::equippedItemHeap DataStore::getAllEquippedItems()
 		// Check that category has an item equipped
 		// If yes, store the item's sprite name
 		// If not, skip to next category
-		if (it->second)
+		Item* item = it->second;
+		if (item)
 		{
-			equippedItems.push(it->second);
+			// If item is layered, store a duplicate item, toggled to Back
+			LayeredItem* lItem = dynamic_cast<LayeredItem*> (item);
+			if (lItem)
+			{
+				lItem->toggleLayer();
+				equippedItems.push(lItem);
+			}
+			else
+			{
+				equippedItems.push(item);
+			}
 		}
 	}
 	return equippedItems;

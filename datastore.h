@@ -6,6 +6,7 @@
 #include <string>
 #include <queue>
 #include "item.h"
+#include "layereditem.h"
 #include "color.h"
 
 struct equipPriority
