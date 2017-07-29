@@ -99,12 +99,13 @@ bool ItemParser::parseItems(DataStore& ds, std::string imgDir,
 						std::string spriteDir, std::string iconDir)
 {
 	// Turn user-provided directory names into (relative) paths
-	spriteDir = imgDir + "/" + spriteDir;
-	iconDir = imgDir + "/" + iconDir;
+	spriteDir = imgDir + '/' + spriteDir;
+	iconDir = imgDir + '/' + iconDir;
 	
 	std::stringstream iss;
 	std::string type;
 	std::string category;
+	std::string filenum;
 
 	// Iterate through sprite directory
 	QDirIterator it(QString::fromStdString(spriteDir), 
@@ -125,11 +126,35 @@ bool ItemParser::parseItems(DataStore& ds, std::string imgDir,
 		iss << spriteName;
 		std::getline(iss, type, '_'); // Store type (e.g. 'body', 'clothing')
 		std::getline(iss, category, '_'); // Store category (e.g. 'eyes', 'shoes')
+		std::getline(iss, filenum);
 		iss.clear(); iss.str("");
 
-		// Create new item, add to datastore
-		Item* newItem = new Item(spritePath, iconPath, type, category);
-		ds.addItem(newItem);
+		if (filenum[0] == 'b') continue;
+
+		else if (filenum[0] == 'a')
+		{
+			std::string backSpritePath;
+			filenum[0] = 'b';
+			backSpritePath = spriteDir + "/"
+								+ type + "_" + category + "_"
+								+ filenum;
+
+			iconPath = iconDir + "/icon_"
+						+ type + "_" + category + "_" 
+						+ filenum.substr(1, filenum.size()-1);
+			
+			Item* newLItem 
+				= new LayeredItem(spritePath, backSpritePath, iconPath, 
+									type, category);
+			ds.addItem(newLItem);
+		}
+
+		else
+		{
+			// Create new item, add to datastore
+			Item* newItem = new Item(spritePath, iconPath, type, category);
+			ds.addItem(newItem);		
+		}
 	}
 	return error_;
 }

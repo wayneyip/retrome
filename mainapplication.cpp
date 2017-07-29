@@ -279,12 +279,31 @@ void MainApplication::updateAvatar()
 	int equippedItemCount = equippedItems.size();
 	for (int i=0; i < equippedItemCount; i++)
 	{
-		std::string equippedItem = equippedItems.top()->getSpriteName();
+		std::string equippedItem;
 		
+		// If item is layered...
+		LayeredItem* lItem = dynamic_cast<LayeredItem*> (equippedItems.top());
+		if (lItem && lItem->getLayer() == 1) // Item is in BACK state
+		{
+			// Store the item's backsprite
+			equippedItem = lItem->getSpriteName();
+			
+			// Add the item's FRONT version to heap
+			lItem->toggleLayer();
+			equippedItems.push(lItem);
+			equippedItemCount++;
+		}
+		// If item is not layered...
+		else
+		{
+			// Just store the item's sprite
+			equippedItem = equippedItems.top()->getSpriteName();
+		}
+
 		// Apply colors to item sprite, if any
 		std::string category = equippedItems.top()->getCategory();
 		Color* selectedColor = ds_->findSelectedColor(category);
-		
+
 		paintSprite(avatar, equippedItem, selectedColor);
 		equippedItems.pop();
 	}

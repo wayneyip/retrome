@@ -10,13 +10,13 @@ public:
 		const std::string type, const std::string category);
 	virtual ~Item();
 
-	std::string getSpriteName() const;
+	virtual std::string getSpriteName() const;
 	std::string getIconName() const;
 	std::string getType() const;
 	std::string getCategory() const;
-	int getPriority() const;
+	virtual int getPriority() const;
 
-private:
+protected:
 	std::string spriteName_;
 	std::string iconName_;
 	std::string type_;

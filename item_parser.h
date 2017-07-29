@@ -2,6 +2,7 @@
 #define ITEM_PARSER_H
 #include <string>
 #include "item.h"
+#include "layereditem.h"
 #include "datastore.h"
 
 class ItemParser
