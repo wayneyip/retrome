@@ -8,14 +8,11 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    if(argc < 2) {
-        cerr << "Please specify a categories file" << endl;
-        return 1;
-    }
+    string categories = "categories.txt";
 
 	DataStore* ds = new DataStore();
 	ItemParser* itemParser = new ItemParser();
-	bool categoryParsingError = itemParser->parseCategories(*ds, argv[1]);
+	bool categoryParsingError = itemParser->parseCategories(*ds, categories);
 	bool itemParsingError = itemParser->parseItems(*ds, "img", "sprites", "icons");
 	if (categoryParsingError)
 	{
