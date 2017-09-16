@@ -14,7 +14,8 @@
 
 ## Current Features
 
-- Parse source images and icons 
+- Parse image and icon files
+- Parse RGB colors from database
 - Customize body parts and clothing
 - Randomly assign body parts and clothing
 - Change colors of body parts
