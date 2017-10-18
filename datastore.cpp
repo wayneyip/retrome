@@ -3,10 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <iostream>
-<<<<<<< HEAD
 #include <ctime>
-=======
->>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 
 DataStore::DataStore()
 {
@@ -293,8 +290,5 @@ void DataStore::printAvatarMap()
 void DataStore::PRINT(std::string statement)
 {
 	std::cout << statement << std::endl;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
+

@@ -2,11 +2,9 @@
 #include <QApplication>
 #include "datastore.h"
 #include "item_parser.h"
-<<<<<<< HEAD
 #include "mainwindow.h"
-=======
 #include "mainapplication.h"
->>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
+
 
 using namespace std;
 
@@ -34,16 +32,10 @@ int main(int argc, char* argv[])
 	}
 
 	QApplication app(argc, argv);
-<<<<<<< HEAD
+
     MainWindow main_app(ds);
 	main_app.show();
 
 	return app.exec();
 }
-=======
-	MainApplication main_app(ds);
-	main_app.show();
 
-	return app.exec();
-}
->>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
