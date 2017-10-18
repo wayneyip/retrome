@@ -17,9 +17,9 @@
 - Parse image and icon files
 - Parse RGB colors from database
 - Customize body parts and clothing
-- Randomly assign body parts and clothing
-- Change colors of body parts
-- Save avatar to drive
+- Randomly generate characters
+- Change colors for skin, hair, eyebrows and eyes
+- Save avatar to local directory
 
 ## Installation
 

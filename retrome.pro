@@ -47,3 +47,6 @@ FORMS += \
 
 OTHER_FILES += \
     categories.txt
+
+DISTFILES += \
+    README.md
