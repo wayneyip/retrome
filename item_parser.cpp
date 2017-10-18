@@ -25,9 +25,14 @@ bool ItemParser::parseCategories(DataStore& ds, std::string categoryFile)
 	// Read category file
 	std::ifstream ifile(categoryFile.c_str());
 	if (ifile.fail())
+<<<<<<< HEAD
     {
         std::cout << QDir::current().path().toStdString() << std::endl;
         return true;
+=======
+	{
+		return true;
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 	}
 
 	std::string line;
@@ -158,4 +163,8 @@ bool ItemParser::parseItems(DataStore& ds, std::string imgDir,
 		}
 	}
 	return error_;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07

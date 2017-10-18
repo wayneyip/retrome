@@ -1,7 +1,11 @@
 #include <algorithm>
+<<<<<<< HEAD
 #include <functional>
 #include <cctype>
 #include <locale>
+=======
+#include <cctype>
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 #include "util.h"
 
 std::string &convToLower(std::string &src)
@@ -38,4 +42,8 @@ std::string &rtrim(std::string &s) {
 // trim from both ends
 std::string &trim(std::string &s) {
     return ltrim(rtrim(s));
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07

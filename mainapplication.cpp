@@ -4,10 +4,17 @@
 #include <QPainter>
 #include <QFont>
 
+<<<<<<< HEAD
 #include "mainwindow.h"
 #include <iostream>
 
 MainWindow::MainWindow(DataStore* ds) :
+=======
+#include "mainapplication.h"
+#include <iostream>
+
+MainApplication::MainApplication(DataStore* ds) :
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 	ds_(ds)
 {
 	initializeComponents();
@@ -21,12 +28,20 @@ MainWindow::MainWindow(DataStore* ds) :
 	randomSelect();
 }
 
+<<<<<<< HEAD
 MainWindow::~()
+=======
+MainApplication::~MainApplication()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 
 }
 
+<<<<<<< HEAD
 void ::initializeComponents()
+=======
+void MainApplication::initializeComponents()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	overallLayout = new QVBoxLayout();
 
@@ -64,7 +79,11 @@ void ::initializeComponents()
 	quitButton = new QPushButton("Quit");
 }
 
+<<<<<<< HEAD
 void MainWindow::setupLayout()
+=======
+void MainApplication::setupLayout()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	// First row: title
 	overallLayout->addLayout(firstRowLayout);
@@ -102,7 +121,11 @@ void MainWindow::setupLayout()
 	thirdRowLayout->addWidget(quitButton);
 }
 
+<<<<<<< HEAD
 void MainWindow::fillCategoryTabMenu()
+=======
+void MainApplication::fillCategoryTabMenu()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	selectionCategoryTabMenu->addTab(selectionCategoryBodyList, "Body");
 	selectionCategoryBodyList->addItem("Body");
@@ -123,7 +146,11 @@ void MainWindow::fillCategoryTabMenu()
 	selectionCategoryTabMenu->addTab(selectionCategoryBackdropList, "Backdrop");
 }
 
+<<<<<<< HEAD
 void MainWindow::styleLayout()
+=======
+void MainApplication::styleLayout()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	// Center app on screen
 	QRect screenGeometry = QApplication::desktop()->screenGeometry();
@@ -138,7 +165,11 @@ void MainWindow::styleLayout()
 	selectionColorList->setMaximumHeight(50);
 }
 
+<<<<<<< HEAD
 void MainWindow::connectEvents()
+=======
+void MainApplication::connectEvents()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	connect(selectionCategoryTabMenu, SIGNAL(currentChanged(int)), this, SLOT(changeType()));
 	connect(selectionCategoryBodyList, SIGNAL(currentRowChanged(int)), this, SLOT(changeCategory()));
@@ -151,12 +182,20 @@ void MainWindow::connectEvents()
 
 }
 
+<<<<<<< HEAD
 void MainWindow::changeType()
+=======
+void MainApplication::changeType()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	changeCategory();
 }
 
+<<<<<<< HEAD
 void MainWindow::changeCategory()
+=======
+void MainApplication::changeCategory()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	// Clear the item and color lists
 	selectionItemList->clear();
@@ -224,7 +263,11 @@ void MainWindow::changeCategory()
 	}
 }
 
+<<<<<<< HEAD
 void MainWindow::selectItem()
+=======
+void MainApplication::selectItem()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
   	// Do nothing if only the category was changed
 	if (selectionItemList->currentRow() < 0) return;
@@ -234,7 +277,11 @@ void MainWindow::selectItem()
 	updateAvatar();
 }
 
+<<<<<<< HEAD
 void MainWindow::changeColor()
+=======
+void MainApplication::changeColor()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	// Do nothing if only the category was changed
 	if (selectionColorList->currentRow() < 0) return;
@@ -243,7 +290,11 @@ void MainWindow::changeColor()
 	updateAvatar();
 }
 
+<<<<<<< HEAD
 QPixmap MainWindow::setupAvatar()
+=======
+QPixmap MainApplication::setupAvatar()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	// Set up transparent pixmap
 	getAvatarSize();
@@ -255,13 +306,21 @@ QPixmap MainWindow::setupAvatar()
 	return avatar;
 }
 
+<<<<<<< HEAD
 void MainWindow::getAvatarSize()
+=======
+void MainApplication::getAvatarSize()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	QImage body("img/body_body_1.png");
 	AVATAR_SIZE = body.size();
 }
 
+<<<<<<< HEAD
 void MainWindow::scaleAvatar(QPixmap& avatar)
+=======
+void MainApplication::scaleAvatar(QPixmap& avatar)
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	QPixmap avatar_scaled;
 	avatar_scaled.fill(Qt::transparent);
@@ -269,7 +328,11 @@ void MainWindow::scaleAvatar(QPixmap& avatar)
 	avatarContainer->setPixmap(avatar_scaled);
 }
 
+<<<<<<< HEAD
 void MainWindow::updateAvatar()
+=======
+void MainApplication::updateAvatar()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	// Set up avatar's head and body
 	QPixmap avatar = setupAvatar();
@@ -316,7 +379,11 @@ void MainWindow::updateAvatar()
 	scaleAvatar(avatar);
 }
 
+<<<<<<< HEAD
 void MainWindow::paintSprite(QPixmap& avatar, std::string spriteName, Color* color)
+=======
+void MainApplication::paintSprite(QPixmap& avatar, std::string spriteName, Color* color)
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	QPainter p(&avatar);
 	QImage sprite(QString::fromStdString(spriteName));
@@ -333,7 +400,11 @@ void MainWindow::paintSprite(QPixmap& avatar, std::string spriteName, Color* col
 	p.end();
 }
 
+<<<<<<< HEAD
 void MainWindow::randomSelect()
+=======
+void MainApplication::randomSelect()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	ds_->selectRandomItems();
 	updateAvatar();
@@ -358,7 +429,11 @@ void MainWindow::randomSelect()
 	}
 }
 
+<<<<<<< HEAD
 void MainWindow::saveAvatar()
+=======
+void MainApplication::saveAvatar()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	// Ensure user provides filename in PNG
 	QString filename = QFileDialog::getSaveFileName();
@@ -373,12 +448,23 @@ void MainWindow::saveAvatar()
 	avatarToSave.save(filename, "PNG");
 }
 
+<<<<<<< HEAD
 void MainWindow::quit()
+=======
+void MainApplication::quit()
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
 {
 	QApplication::exit();
 }
 
+<<<<<<< HEAD
 void MainWindow::PRINT(std::string statement)
 {
 	std::cout << statement << std::endl;
 }
+=======
+void MainApplication::PRINT(std::string statement)
+{
+	std::cout << statement << std::endl;
+}
+>>>>>>> 6336fb2baad7f6969e303e52be0ae1008e6fab07
