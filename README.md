@@ -27,7 +27,7 @@ Finally, save your avatar straight to your local drive as a clean PNG image read
 - Save avatar to local directory
 
 ## Details
-**Technologies**: C++, Qt
+**Technologies**: C++, Qt, Qt Creator
 
 **Developer**: Wayne (Yip Wen Qian)
 
@@ -35,4 +35,4 @@ Finally, save your avatar straight to your local drive as a clean PNG image read
 
 ## Installation
 
-[To be added]
+Coming soon. Stay tuned!
