@@ -14,13 +14,13 @@ Finally, save your avatar straight to your local drive as a clean PNG image read
 ## Current Features
 
 - Customize features and clothing
-![RetroMe Features/Clothing Customization](https://imgur.com/wsQ2tIW)
+![RetroMe Features/Clothing Customization](https://i.imgur.com/wsQ2tIW.gif)
 
 - Change colors for skin, hair, eyebrows and eyes
-![RetroMe Color Changing](https://imgur.com/HgdJM0t)
+![RetroMe Color Changing](https://i.imgur.com/HgdJM0t.gif)
 
 - Randomly generate characters
-![RetroMe Random Character Generation](https://imgur.com/rfz1XZj)
+![RetroMe Random Character Generation](https://i.imgur.com/rfz1XZj.gif)
 
 - Parse image and icon files
 - Parse RGB colors from text file
