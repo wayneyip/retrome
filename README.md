@@ -1,7 +1,7 @@
 <div align="center">
-    <img src="img/title_1.png"></img>
+    <img src="https://i.imgur.com/7HWXfEy.png"></img>
     <br>
-    <img src="img/readme/avatar_1.png"></img><img src="img/readme/avatar_2.png"></img><img src="img/readme/avatar_3.png"></img>
+    <img src="https://i.imgur.com/X6idiRG.png"></img><img src="https://i.imgur.com/bS62ZyO.png"></img><img src="https://i.imgur.com/E7uDOBH.png"></img>
 </div>
 
 ## Overview
