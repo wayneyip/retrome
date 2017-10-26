@@ -24,29 +24,29 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    color.cpp \
-    datastore.cpp \
-    item.cpp \
-    item_parser.cpp \
-    layereditem.cpp \
-    util.cpp
+        src\main.cpp \
+        src\mainwindow.cpp \
+    src\color.cpp \
+    src\datastore.cpp \
+    src\item.cpp \
+    src\item_parser.cpp \
+    src\layereditem.cpp \
+    src\util.cpp
 
 HEADERS += \
-        mainwindow.h \
-    color.h \
-    datastore.h \
-    item.h \
-    item_parser.h \
-    layereditem.h \
-    util.h
+        src\mainwindow.h \
+    src\color.h \
+    src\datastore.h \
+    src\item.h \
+    src\item_parser.h \
+    src\layereditem.h \
+    src\util.h
 
 FORMS += \
-        mainwindow.ui
+        src\mainwindow.ui
 
 OTHER_FILES += \
-    categories.txt
+    misc\categories.txt
 
 DISTFILES += \
     README.md
