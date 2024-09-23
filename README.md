@@ -7,9 +7,7 @@
 ## Overview
 RetroMe is a character creator in which you build your own avatar in pixel art!
 
-Pick your favorite features and outfits from elf ears to edgy black jackets, or randomly generate it all with the click of a button.
-Color your features any way you want, from blue eyes and auburn hair to green skin and blond eyebrows -- and if nothing fits your bill, parse in your own colors!
-Finally, save your avatar straight to your local drive as a clean PNG image ready for use.
+This is my **personal project** developed in the summer of 2017.
 
 ## Current Features
 
@@ -32,10 +30,7 @@ Finally, save your avatar straight to your local drive as a clean PNG image read
 ## Details
 **Technologies**: C++, Qt, Qt Creator
 
-**Developer**: Wayne (Yip Wen Qian)
+**Developer**: Wayne Yip
 
-**Contact**: yipw@usc.edu
+**Artist**: ...Wayne Yip 
 
-## Installation
-
-Coming soon. Stay tuned!
